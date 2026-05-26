@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Microcurso Inbound · Día 7 — Plazos comerciales: reconexiones y reposiciones</title>
+<style>
+/* ═══ INBOUND ENHANCEMENTS — diseño visual mejorado ═══ */
+.scene{display:none!important}.scene.active{display:block!important}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#F0F4F8;color:#1E293B;font-size:15px;line-height:1.6;overflow-y:scroll}
+.mc-wrap{max-width:780px;margin:0 auto;padding:14px 14px 110px}
+
+/* Header mejorado */
+.mc-header{background:linear-gradient(135deg,#1B3A6B 0%,#2563EB 100%);border-radius:14px;padding:18px 22px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 4px 16px rgba(27,58,107,.25)}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-icon{width:48px;height:48px;background:rgba(255,255,255,.18);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.mc-header h1{color:#fff;font-size:17px;font-weight:700;line-height:1.3;margin-bottom:3px}
+.mc-header p{color:#BFDBFE;font-size:11px}
+.score-display{background:rgba(255,255,255,.15);color:#E0F2FE;font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;white-space:nowrap;border:1px solid rgba(255,255,255,.2)}
+
+/* Progress */
+.progress-wrap{background:#E2E8F0;border-radius:20px;height:7px;margin-bottom:8px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.08)}
+.progress-bar{height:7px;background:linear-gradient(90deg,#0D9488,#2563EB);border-radius:20px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.scene-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.scene-info span{font-size:11px;color:#64748B}
+.bloom-badge{background:linear-gradient(135deg,#1B3A6B,#2563EB);color:#fff;font-size:10px;font-weight:700;padding:3px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(27,58,107,.3)}
+
+/* Slides */
+.slide{background:#fff;border-radius:14px;border:0.5px solid #E2E8F0;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.slide-hdr{padding:16px 20px;border-bottom:0.5px solid rgba(255,255,255,.3)}
+.hdr-blue{background:linear-gradient(135deg,#1B3A6B,#2563EB)}.hdr-blue .slide-tag,.hdr-blue h2{color:#fff}
+.hdr-teal{background:linear-gradient(135deg,#0D9488,#0F766E)}.hdr-teal .slide-tag,.hdr-teal h2{color:#fff}
+.hdr-amber{background:linear-gradient(135deg,#D97706,#B45309)}.hdr-amber .slide-tag,.hdr-amber h2{color:#fff}
+.hdr-purp{background:linear-gradient(135deg,#7C3AED,#6D28D9)}.hdr-purp .slide-tag,.hdr-purp h2{color:#fff}
+.hdr-red{background:linear-gradient(135deg,#DC2626,#B91C1C)}.hdr-red .slide-tag,.hdr-red h2{color:#fff}
+.hdr-green{background:linear-gradient(135deg,#16A34A,#15803D)}.hdr-green .slide-tag,.hdr-green h2{color:#fff}
+.slide-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;opacity:.85}
+.slide-hdr h2{font-size:16px;font-weight:700;line-height:1.3}
+.slide-body{padding:18px 20px}
+
+/* Tarjetas reveal mejoradas */
+.reveal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.rev-card{border-radius:12px;padding:14px 15px;cursor:pointer;border:2px solid transparent;transition:all .2s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.rev-card::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,.4),rgba(255,255,255,0));pointer-events:none}
+.rev-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.12)}
+.rev-card:active{transform:scale(.97)}
+.rev-card h4{font-size:13px;font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.rev-card .card-icon{font-size:18px;flex-shrink:0}
+.rev-desc{font-size:11.5px;line-height:1.55;display:none;margin:6px 0 4px}
+.rev-hint{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;display:inline-block;margin-top:5px;transition:all .2s}
+.rev-card.revealed .rev-desc{display:block}
+.rev-card.revealed .rev-hint{opacity:.7}
+.rev-card.blue{background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border-color:#BFDBFE}
+.rev-card.blue h4{color:#1D4ED8}.rev-card.blue .rev-desc{color:#1E40AF}.rev-card.blue .rev-hint{background:#BFDBFE;color:#1E40AF}
+.rev-card.teal{background:linear-gradient(135deg,#F0FDFA,#CCFBF1);border-color:#99F6E4}
+.rev-card.teal h4{color:#0F766E}.rev-card.teal .rev-desc{color:#115E59}.rev-card.teal .rev-hint{background:#99F6E4;color:#0F766E}
+.rev-card.purp{background:linear-gradient(135deg,#F5F3FF,#EDE9FE);border-color:#DDD6FE}
+.rev-card.purp h4{color:#6D28D9}.rev-card.purp .rev-desc{color:#5B21B6}.rev-card.purp .rev-hint{background:#DDD6FE;color:#5B21B6}
+.rev-card.amber{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border-color:#FDE68A}
+.rev-card.amber h4{color:#92400E}.rev-card.amber .rev-desc{color:#78350F}.rev-card.amber .rev-hint{background:#FDE68A;color:#78350F}
+.rev-card.red{background:linear-gradient(135deg,#FFF5F5,#FEE2E2);border-color:#FECACA}
+.rev-card.red h4{color:#991B1B}.rev-card.red .rev-desc{color:#7F1D1D}.rev-card.red .rev-hint{background:#FECACA;color:#7F1D1D}
+.rev-card.green{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-color:#BBF7D0}
+.rev-card.green h4{color:#166534}.rev-card.green .rev-desc{color:#14532D}.rev-card.green .rev-hint{background:#BBF7D0;color:#166534}
+.rev-card.gray{background:linear-gradient(135deg,#F8FAFC,#F1F5F9);border-color:#E2E8F0}
+.rev-card.gray h4{color:#334155}.rev-card.gray .rev-desc{color:#475569}.rev-card.gray .rev-hint{background:#E2E8F0;color:#334155}
+
+/* Summary box */
+.concept-summary{background:linear-gradient(135deg,#EFF6FF,#F0FDFA);border-left:4px solid #2563EB;border-radius:0 10px 10px 0;padding:12px 16px;margin-bottom:12px;font-size:13px;color:#1E293B;line-height:1.65}
+.concept-summary strong{color:#1B3A6B}
+.concept-counter{font-size:11px;color:#64748B;text-align:center;margin-top:10px;font-weight:500}
+
+/* Options */
+.opts{display:flex;flex-direction:column;gap:9px;margin:12px 0}
+.opt{border-radius:10px;padding:13px 16px;cursor:pointer;border:1.5px solid #E2E8F0;background:#fff;font-size:13px;text-align:left;color:#1E293B;transition:all .15s;line-height:1.5;width:100%;font-family:'Segoe UI',Arial,sans-serif;position:relative;overflow:hidden}
+.opt::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#E2E8F0;transition:background .15s}
+.opt:hover{border-color:#2563EB;background:#EFF6FF;transform:translateX(3px)}.opt:hover::before{background:#2563EB}
+.opt.correct{border-color:#16A34A;background:#F0FDF4;color:#14532D;pointer-events:none;font-weight:600}.opt.correct::before{background:#16A34A}
+.opt.wrong{border-color:#DC2626;background:#FFF5F5;color:#7F1D1D;pointer-events:none}.opt.wrong::before{background:#DC2626}
+.opt.disabled{opacity:.45;pointer-events:none}
+
+/* Feedback */
+.feedback{border-radius:10px;padding:12px 16px;font-size:12.5px;line-height:1.65;display:none;margin-top:8px}
+.feedback.show{display:block;animation:fadeIn .3s ease}
+.feedback.ok{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);color:#14532D;border:1px solid #BBF7D0}
+.feedback.ko{background:linear-gradient(135deg,#FFF5F5,#FEE2E2);color:#7F1D1D;border:1px solid #FECACA}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Case boxes */
+.case-box{border-radius:12px;padding:15px 18px;margin-bottom:14px;border:1.5px solid transparent}
+.case-box.amber{background:#FFFBEB;border-color:#FDE68A}.case-box.red{background:#FFF5F5;border-color:#FECACA}
+.case-box.teal{background:#F0FDFA;border-color:#99F6E4}.case-box.blue{background:#EFF6FF;border-color:#BFDBFE}
+.case-box.purp{background:#F5F3FF;border-color:#DDD6FE}
+.case-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.case-box.amber .case-label{color:#92400E}.case-box.red .case-label{color:#991B1B}
+.case-box.teal .case-label{color:#0F766E}.case-box.blue .case-label{color:#1D4ED8}
+.case-box.purp .case-label{color:#6D28D9}
+.case-box p{font-size:13px;line-height:1.65;color:#1E293B}
+
+/* Mini cards */
+.card-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.mini-card{border-radius:12px;padding:14px 12px;text-align:center;transition:transform .2s}
+.mini-card:hover{transform:translateY(-2px)}
+.mini-card.blue{background:linear-gradient(135deg,#EFF6FF,#DBEAFE)}.mini-card.blue h4{color:#1D4ED8}.mini-card.blue p{color:#3B82F6}
+.mini-card.teal{background:linear-gradient(135deg,#F0FDFA,#CCFBF1)}.mini-card.teal h4{color:#0F766E}.mini-card.teal p{color:#14B8A6}
+.mini-card.amber{background:linear-gradient(135deg,#FFFBEB,#FEF3C7)}.mini-card.amber h4{color:#92400E}.mini-card.amber p{color:#D97706}
+.mini-card.purp{background:linear-gradient(135deg,#F5F3FF,#EDE9FE)}.mini-card.purp h4{color:#6D28D9}.mini-card.purp p{color:#8B5CF6}
+.mc-icon{font-size:26px;margin-bottom:8px}
+.mini-card h4{font-size:12px;font-weight:700;margin-bottom:3px}
+.mini-card p{font-size:10.5px}
+
+/* Info / tip boxes */
+.intro-text{font-size:13.5px;line-height:1.75;color:#1E293B;margin-bottom:14px}
+.hint-text{font-size:12px;color:#64748B;margin-bottom:8px;font-style:italic}
+.info-box{background:linear-gradient(135deg,#F8FAFC,#F1F5F9);border-radius:10px;padding:11px 15px;margin-top:14px;font-size:12.5px;color:#475569;border:1px solid #E2E8F0;display:flex;align-items:center;gap:8px}
+.tip-box{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border-radius:10px;padding:11px 15px;margin-top:12px;font-size:12px;color:#78350F;border:1px solid #FDE68A}
+.alert-box{background:linear-gradient(135deg,#FFF5F5,#FEE2E2);border-radius:10px;padding:11px 15px;margin-top:12px;font-size:12px;color:#7F1D1D;border:1px solid #FECACA;display:flex;align-items:flex-start;gap:8px}
+
+/* Synth / error items */
+.synth-item{display:flex;gap:10px;align-items:flex-start;padding:10px 13px;background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-radius:9px;margin-bottom:8px;border:1px solid #BBF7D0}
+.synth-item .si-icon{color:#16A34A;font-size:16px;flex-shrink:0;margin-top:1px}
+.synth-item p{font-size:12.5px;color:#14532D;line-height:1.55}
+.error-item{display:flex;gap:10px;align-items:flex-start;padding:10px 13px;background:linear-gradient(135deg,#FFF5F5,#FEE2E2);border-radius:9px;margin-bottom:8px;border:1px solid #FECACA}
+.error-item .ei-icon{color:#DC2626;font-size:16px;flex-shrink:0;margin-top:1px}
+.error-item p{font-size:12.5px;color:#7F1D1D;line-height:1.55}
+
+/* Quiz */
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.btn-primary{background:linear-gradient(135deg,#1B3A6B,#2563EB);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Segoe UI',Arial,sans-serif;box-shadow:0 3px 10px rgba(27,58,107,.3);transition:all .15s}
+.btn-primary:hover{background:linear-gradient(135deg,#1e4284,#2d6ef7);transform:translateY(-1px)}
+.btn-primary:active{transform:scale(.97)}
+.btn-secondary{background:#F1F5F9;color:#1E293B;border:1px solid #CBD5E1;border-radius:10px;padding:11px 22px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Segoe UI',Arial,sans-serif;transition:all .15s}
+.btn-secondary:hover{background:#E2E8F0}
+
+/* Result card */
+.result-card{background:linear-gradient(135deg,#1B3A6B 0%,#2563EB 100%);border-radius:16px;padding:28px;text-align:center;color:#fff;margin-bottom:16px;box-shadow:0 8px 24px rgba(27,58,107,.35)}
+.result-title{font-size:13px;color:#BFDBFE;margin-bottom:8px;font-weight:500}
+.result-score{font-size:58px;font-weight:800;line-height:1;margin-bottom:8px}
+.result-pct{font-size:15px;color:#BFDBFE;margin-bottom:18px}
+.result-bar-wrap{background:rgba(255,255,255,.2);border-radius:20px;height:10px;overflow:hidden;margin-bottom:18px}
+.result-bar{height:10px;background:linear-gradient(90deg,#34D399,#10B981);border-radius:20px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.result-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);border-radius:20px;padding:8px 18px;font-size:12px;color:#E0F2FE;border:1px solid rgba(255,255,255,.2)}
+.result-actions{text-align:center;margin-top:16px}
+.review-box{background:#fff;border-radius:12px;border:1px solid #E2E8F0;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.review-title{font-size:12px;font-weight:700;color:#1E293B;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.review-list{font-size:12px;color:#64748B;line-height:1.85;padding-left:16px}
+
+/* SAP */
+.sap-lbl{font-size:11.5px;color:#64748B;display:block;margin-bottom:4px;font-weight:500}
+.sap-input{width:100%;border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 12px;font-size:13px;font-family:monospace;background:#F8FAFC;color:#1E293B;transition:border-color .15s}
+.sap-input:focus{outline:none;border-color:#2563EB;background:#EFF6FF}
+.formula-box{background:linear-gradient(135deg,#EFF6FF,#E0F2FE);border-radius:12px;padding:16px 18px;border:1px solid #BFDBFE;margin-bottom:14px}
+.formula-title{font-size:12px;font-weight:700;color:#1D4ED8;margin-bottom:10px}
+.formula{font-size:14px;font-weight:700;color:#1D4ED8;text-align:center;padding:10px;background:rgba(255,255,255,.7);border-radius:8px;margin:6px 0;font-family:monospace}
+.fex{border-radius:9px;padding:11px 13px}
+.fex.blue{background:rgba(255,255,255,.75);border:1px solid #BFDBFE}
+.fex.teal{background:rgba(255,255,255,.75);border:1px solid #99F6E4}
+.fex-row{display:flex;justify-content:space-between;font-size:11.5px;color:#64748B;margin-bottom:4px}
+.fex-title{font-size:10.5px;font-weight:700;margin-bottom:7px;color:#1D4ED8}
+.fex-total{font-size:12px;font-weight:700;color:#fff;border-radius:6px;padding:6px 10px;text-align:center;margin-top:7px}
+.formula-examples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.calc-total{background:linear-gradient(135deg,#1B3A6B,#2563EB);color:#fff;border-radius:9px;padding:9px 15px;font-size:14px;font-weight:800;text-align:center;margin-top:8px}
+
+/* Nav fixed */
+.nav-fixed{position:fixed;bottom:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#1B3A6B,#2563EB);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 -4px 20px rgba(27,58,107,.4)}
+.nav-info{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.nav-counter{color:#BFDBFE;font-size:11px;font-weight:600}
+.nav-dots-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .35s cubic-bezier(.4,0,.2,1)}
+.nav-dot.done{background:#34D399}.nav-dot.cur{background:#fff;width:22px;border-radius:4px}
+.btn-nav-big{background:#fff;color:#1B3A6B;border:none;border-radius:11px;padding:12px 20px;font-size:15px;font-weight:800;cursor:pointer;min-width:110px;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 3px 10px rgba(0,0,0,.2);touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:rgba(27,58,107,.2);transition:transform .1s,background .15s,box-shadow .15s;font-family:'Segoe UI',Arial,sans-serif}
+.btn-nav-big:hover{background:#EFF6FF;box-shadow:0 5px 14px rgba(0,0,0,.2)}
+.btn-nav-big:active{transform:scale(.94)}
+.btn-nav-big:disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
+.btn-nav-big.next-btn{background:linear-gradient(135deg,#0D9488,#0F766E);color:#fff}
+.btn-nav-big.next-btn:hover{background:linear-gradient(135deg,#14B8A6,#0D9488)}
+
+/* Result banner */
+#resultBanner{display:none;border-radius:12px;padding:22px;margin:14px 0;text-align:center;font-size:14px;line-height:1.9}
+
+/* Flow steps */
+.flow-step{border-radius:11px;padding:13px 16px;margin-bottom:9px;border:2px solid transparent;background:#F8FAFC;transition:all .25s}
+.flow-step.active-step{background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border-color:#BFDBFE;box-shadow:0 4px 12px rgba(37,99,235,.15)}
+.flow-step.done-step{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-color:#BBF7D0}
+.flow-step h4{font-size:13px;font-weight:700;margin-bottom:5px}
+.flow-step.active-step h4{color:#1D4ED8}.flow-step.done-step h4{color:#15803D}
+
+/* Process timeline */
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,#2563EB,#0D9488)}
+.tl-item{position:relative;margin-bottom:14px}
+.tl-dot{position:absolute;left:-24px;top:4px;width:14px;height:14px;border-radius:50%;background:#2563EB;border:2px solid #fff;box-shadow:0 0 0 2px #2563EB}
+.tl-dot.teal{background:#0D9488;box-shadow:0 0 0 2px #0D9488}
+.tl-dot.amber{background:#D97706;box-shadow:0 0 0 2px #D97706}
+.tl-dot.red{background:#DC2626;box-shadow:0 0 0 2px #DC2626}
+.tl-content{background:#fff;border-radius:10px;padding:10px 14px;border:1px solid #E2E8F0;font-size:12.5px;color:#1E293B;line-height:1.55}
+.tl-title{font-weight:700;font-size:12px;margin-bottom:3px;color:#1B3A6B}
+</style>
+</head>
+<body>
+<div id="resultBanner"></div>
+<div class="mc-wrap">
+<header class="mc-header">
+  <div class="header-left">
+    <div class="header-icon">⏱️</div>
+    <div>
+      <h1>Plazos comerciales: reconexiones y reposiciones</h1>
+      <p>Inbound · Día 7 · Bloom: Analizar · 6–8 min</p>
+    </div>
+  </div>
+  <div class="score-display" id="scoreDisplay">Puntuación: 0%</div>
+</header>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+<div class="scene-info"><span id="sceneLabel">Módulo 1 de 9</span><span id="bloomLabel" class="bloom-badge">Bloom: Analizar</span></div>
+<section class="scene active" id="sc0">
+<div class="slide"><div class="slide-hdr hdr-blue"><span class="slide-tag">🎯 Bienvenida · Semana 2</span><h2>¿Qué vas a dominar hoy?</h2></div>
+<div class="slide-body">
+<p class="intro-text">Hoy aprenderás los <strong>plazos normativos de reconexión, desconexión y reposición</strong> y cómo manejar la expectativa del cliente cuando el plazo no puede cumplirse exactamente.</p>
+<div class="card-grid-3">
+  <div class="mini-card blue"><div class="mc-icon">⏱️</div><h4>Plazos comerciales</h4><p>Analizar</p></div>
+  <div class="mini-card teal"><div class="mc-icon">🎯</div><h4>3 casos de decisión</h4><p>Situaciones reales</p></div>
+  <div class="mini-card amber"><div class="mc-icon">✏️</div><h4>Quiz de cierre</h4><p>4 preguntas</p></div>
+</div>
+<div class="info-box">⏱ <strong>Duración: 7 min</strong> — 6 conceptos, módulos de contenido, 3 casos y quiz.</div>
+</div></div></section><section class="scene" id="sc1">
+<div class="slide"><div class="slide-hdr hdr-blue"><span class="slide-tag">📚 Módulo 1 de 4 — Conceptos clave</span><h2>Plazos comerciales: reconexiones y reposiciones — toca cada tarjeta</h2></div>
+<div class="slide-body">
+<div class="concept-summary">Cada tipo de solicitud tiene un <strong>plazo normativo específico</strong>. Prometer el plazo incorrecto genera reclamos. La regla de oro: verificar siempre el tipo de situación antes de comprometerte con un tiempo.</div>
+<p class="hint-text">Haz clic en cada tarjeta para ver definición completa, criterios y aplicación práctica.</p>
+<div class="reveal-grid" id="cardGrid"></div>
+<div class="concept-counter" id="cardCnt">0 de 6 conceptos explorados</div>
+</div></div></section><section class="scene" id="sc2">
+<div class="slide"><div class="slide-hdr hdr-teal"><span class="slide-tag">📅 Módulo 2 de 4 — Flujograma de plazos</span><h2>Plazos normativos por tipo de solicitud</h2></div>
+<div class="slide-body"><div class="concept-summary">El flujograma de plazos define el <strong>tiempo máximo legal</strong> para cada tipo de solicitud. Conocerlo de memoria evita prometer plazos incorrectos.</div>
+<div style="display:flex;flex-direction:column;gap:10px;margin:12px 0">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+    <div style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border-radius:11px;padding:13px;border:1.5px solid #BFDBFE;text-align:center">
+      <div style="font-size:22px;margin-bottom:6px">🔌</div>
+      <div style="font-size:12px;font-weight:800;color:#1D4ED8;margin-bottom:4px">RECONEXIÓN</div>
+      <div style="font-size:11px;color:#1E40AF">Normativo: 24 hrs hábiles<br>SLA interno: 6 hrs<br>Desde: confirmación pago</div>
+    </div>
+    <div style="background:linear-gradient(135deg,#F0FDFA,#CCFBF1);border-radius:11px;padding:13px;border:1.5px solid #99F6E4;text-align:center">
+      <div style="font-size:22px;margin-bottom:6px">✂️</div>
+      <div style="font-size:12px;font-weight:800;color:#0F766E;margin-bottom:4px">DESCONEXIÓN</div>
+      <div style="font-size:11px;color:#115E59">Normativo: 24–48 hrs<br>Requiere: identidad titular<br>Reversible: sí</div>
+    </div>
+    <div style="background:linear-gradient(135deg,#FFF5F5,#FEE2E2);border-radius:11px;padding:13px;border:1.5px solid #FECACA;text-align:center">
+      <div style="font-size:22px;margin-bottom:6px">⚡</div>
+      <div style="font-size:12px;font-weight:800;color:#991B1B;margin-bottom:4px">REPOSICIÓN FALLA</div>
+      <div style="font-size:11px;color:#7F1D1D">Normativo: variable por tipo<br>Fuera plazo: compensación<br>Escalar: Jefatura</div>
+    </div>
+  </div>
+</div>
+<div class="alert-box"><span>⚠️</span><span>Siempre verificar el pago en el sistema antes de comprometer el plazo de reconexión. Un pago no confirmado no activa el contador de tiempo.</span></div></div></div></section><section class="scene" id="sc3"><div class="slide"><div class="slide-hdr hdr-amber"><span class="slide-tag">🎯 Caso 1 de 3 — Decisión</span><h2>Cliente exige reconexión en 1 hora</h2></div>
+<div class="slide-body"><div class="case-box amber"><div class="case-label">⚡ Situación real</div><p>Don Hernán pagó la deuda hace 2 horas. Llama exigiendo que lo reconecten 'en una hora o más'. El plazo normativo es 24 horas hábiles, el SLA interno es 6 horas.</p></div>
+<p class="hint-text">¿Cuál es la acción correcta?</p><div class="opts" id="d1"><button class="opt" onclick="decidir(1,'A')">A) 'Le confirmo que en 1 hora tiene la reconexión' (para satisfacer al cliente).</button><button class="opt" onclick="decidir(1,'B')">B) 'Don Hernán, confirmo el pago y registro el caso. El plazo es de hasta 24 horas hábiles, aunque nuestro equipo trabaja para hacerlo en menos tiempo. Voy a registrar su solicitud como urgente. ¿Le parece que le confirmemos cuando esté lista la reconexión?'</button><button class="opt" onclick="decidir(1,'C')">C) 'Lo siento, no puedo hacer nada más rápido — es el plazo del sistema.'</button></div><div class="feedback" id="fb1"></div>
+</div></div></section><section class="scene" id="sc4"><div class="slide"><div class="slide-hdr hdr-purp"><span class="slide-tag">💬 Módulo 3 de 4 — Manejo de expectativa</span><h2>Qué decir y qué NO decir sobre plazos</h2></div>
+<div class="slide-body"><div class="concept-summary">La clave del manejo de expectativa es ser <strong>honesto con el plazo real</strong>, ofrecer lo que SÍ se puede hacer y comprometerse con una acción concreta.</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0">
+  <div style="background:linear-gradient(135deg,#FFF5F5,#FEE2E2);border-radius:11px;padding:14px;border:1.5px solid #FECACA">
+    <div style="font-size:11px;font-weight:800;color:#991B1B;margin-bottom:8px">❌ Frases que generan problemas</div>
+    <div style="font-size:11.5px;color:#7F1D1D;line-height:1.8">• "En una hora le tenemos la luz"<br>• "No depende de mí"<br>• "Eso no es posible"<br>• "Tiene que esperar nomás"<br>• "Le prometo que hoy lo resolvemos"</div>
+  </div>
+  <div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-radius:11px;padding:14px;border:1.5px solid #BBF7D0">
+    <div style="font-size:11px;font-weight:800;color:#14532D;margin-bottom:8px">✓ Frases que funcionan</div>
+    <div style="font-size:11.5px;color:#15803D;line-height:1.8">• "El plazo es [X]. Voy a registrarlo como urgente."<br>• "Lo que sí puedo hacer es [acción concreta]"<br>• "Voy a escalar para acortar el tiempo"<br>• "Me comprometo a confirmarle cuando esté listo"<br>• "Entiendo la urgencia — aquí el siguiente paso es..."</div>
+  </div>
+</div></div></div></section><section class="scene" id="sc4"><div class="slide"><div class="slide-hdr hdr-amber"><span class="slide-tag">🎯 Caso 2 de 3 — Decisión</span><h2>Reposición que lleva 30 horas sin cumplirse</h2></div>
+<div class="slide-body"><div class="case-box purp"><div class="case-label">⚡ Situación real</div><p>La señora Claudia llama furiosa: tiene 30 horas sin suministro y le prometieron 24 horas. El equipo técnico aún no ha resuelto la falla.</p></div>
+<p class="hint-text">¿Cuál es la acción correcta?</p><div class="opts" id="d2"><button class="opt" onclick="decidir(2,'A')">A) Reconocer que se superó el plazo prometido, validar la molestia, registrar el caso documentando las horas sin suministro, escalar a jefatura y explicar que la compensación que puede corresponder será evaluada por el área correspondiente.</button><button class="opt" onclick="decidir(2,'B')">B) Decirle que los plazos son referenciales y que 30 horas es normal en fallas complejas.</button><button class="opt" onclick="decidir(2,'C')">C) Prometer una compensación inmediata para calmar al cliente.</button></div><div class="feedback" id="fb2"></div>
+</div></div></section><section class="scene" id="sc5"><div class="slide"><div class="slide-hdr hdr-amber"><span class="slide-tag">🎯 Caso 3 de 3 — Decisión</span><h2>Solicitante confundido sobre el tipo de corte</h2></div>
+<div class="slide-body"><div class="case-box teal"><div class="case-label">⚡ Situación real</div><p>Don Patricio llama confundido: 'Quiero que me corten la luz porque me voy de viaje un mes'. No sabe qué tipo de solicitud es ni qué plazo tiene.</p></div>
+<p class="hint-text">¿Cuál es la acción correcta?</p><div class="opts" id="d3"><button class="opt" onclick="decidir(3,'A')">A) Cortar el suministro directamente sin mayor verificación porque el cliente lo solicita.</button><button class="opt" onclick="decidir(3,'B')">B) Decirle que no es posible hacer ese trámite por teléfono.</button><button class="opt" onclick="decidir(3,'C')">C) Explicarle que es una desconexión a solicitud, que requiere identificación del titular, que el plazo es 24 a 48 horas hábiles y que puede reconectar cuando regrese mediante nueva solicitud. Procesar si tiene toda la información.</button></div><div class="feedback" id="fb3"></div>
+</div></div></section><section class="scene" id="sc7">
+<div class="slide"><div class="slide-hdr hdr-amber"><span class="slide-tag">✏️ Quiz de cierre — 4 preguntas</span><h2>Demuestra lo que aprendiste</h2></div>
+<div class="slide-body">
+  <p class="hint-text">Lee cada pregunta con calma — hay retroalimentación detallada en cada respuesta.</p>
+  <div id="qText"></div><div id="qOpts" class="opts"></div><div id="qFb" class="feedback"></div>
+  <div class="quiz-nav"><span id="qCounter" class="hint-text" style="font-size:12px;font-weight:600">Pregunta 1 de 4</span>
+  <button class="btn-primary" id="qNext" onclick="nextQ()" style="display:none">Siguiente &#9654;</button></div>
+</div></div></section>
+<section class="scene" id="sc8">
+<div class="result-card"><div class="result-title">Microcurso Inbound completado</div>
+<div class="result-score" id="resultScore">0/4</div><div class="result-pct" id="resultPct">0%</div>
+<div class="result-bar-wrap"><div class="result-bar" id="resultBar" style="width:0%"></div></div>
+<div class="result-badge" id="resultBadge">Calculando resultado...</div></div>
+<div id="reviewBox"></div>
+<div class="result-actions"><button class="btn-secondary" onclick="restartQuiz()">&#8635; Reiniciar microcurso</button></div>
+</section>
+</div>
+<div class="nav-fixed">
+  <button class="btn-nav-big" id="btnPrev" onclick="NAV(-1)" disabled>&#9664; Anterior</button>
+  <div class="nav-info">
+    <span class="nav-counter" id="navCnt">1 / 9</span>
+    <div class="nav-dots-row" id="navDots"><div class="nav-dot cur"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div></div>
+  </div>
+  <button class="btn-nav-big next-btn" id="btnNext" onclick="NAV(1)">Siguiente &#9654;</button>
+</div>
+<script>
+var SCORM=(function(){
+  var a=null,ok=false;
+  function find(w){var t=0;try{while(!w.API_1484_11&&w.parent&&w.parent!==w&&t<10){w=w.parent;t++;}}catch(e){}return w.API_1484_11||null;}
+  (function(){try{a=find(window);if(!a&&window.opener)a=find(window.opener);if(a){var r=a.Initialize('');ok=(r==='true'||r===true);}}catch(e){}})();
+  function sv(k,v){try{if(a&&ok)a.SetValue(k,v);}catch(e){}}
+  function done(p){
+    try{sv('cmi.score.raw',p);sv('cmi.score.min',0);sv('cmi.score.max',100);sv('cmi.score.scaled',(p/100).toFixed(4));sv('cmi.completion_status','completed');sv('cmi.success_status',p>=75?'passed':'failed');sv('cmi.session_time','PT7M0S');if(a&&ok){a.Commit('');a.Terminate('');}}catch(e){}
+    var b=document.getElementById('resultBanner');
+    if(b){b.style.cssText='display:block;border-radius:12px;padding:22px;margin:14px 0;text-align:center;font-size:14px;line-height:1.9;background:'+(p>=75?'linear-gradient(135deg,#F0FDF4,#DCFCE7)':'linear-gradient(135deg,#FFF5F5,#FEE2E2)')+';color:'+(p>=75?'#14532D':'#7F1D1D')+';border:2px solid '+(p>=75?'#86EFAC':'#FCA5A5');
+    b.innerHTML='<div style="font-size:38px;margin-bottom:8px">'+(p>=75?'🎉':'⚠️')+'</div><strong style="font-size:18px">'+(p>=75?'¡Aprobado! '+p+'%':'No aprobado — '+p+'%')+'</strong><br><span style="font-size:13px">'+(p>=75?'Módulo completado correctamente. ¡Continúa con el siguiente día!':'Umbral mínimo 75%. Revisa el contenido y vuelve a intentarlo.')+'</span>';}
+  }
+  return{set:sv,get:function(){return'';},commit:function(){},finish:function(){},setComplete:done,initialized:ok};
+})();
+
+var CUR=0,TOTAL_SC=0;
+function NAV(d){
+  var n=CUR+d;if(n<0||n>=TOTAL_SC)return;
+  var prev=document.getElementById('sc'+CUR);if(prev)prev.classList.remove('active');
+  CUR=n;if(typeof state!=='undefined')state.cur=CUR;
+  var next=document.getElementById('sc'+CUR);if(next)next.classList.add('active');
+  UPD();
+  if(CUR===TOTAL_SC-2&&typeof state!=='undefined'&&!state.qInitDone){state.qInitDone=true;if(typeof showQuestion==='function')showQuestion();}
+  if(CUR===TOTAL_SC-1&&typeof showResults==='function')showResults();
+  window.scrollTo(0,0);
+}
+function goScene(d){NAV(d);}
+function UPD(){
+  document.getElementById('navCnt').textContent=(CUR+1)+' / '+TOTAL_SC;
+  document.getElementById('btnPrev').disabled=(CUR===0);
+  document.getElementById('btnNext').disabled=(CUR===TOTAL_SC-1);
+  var pb=document.getElementById('progressBar');if(pb)pb.style.width=(TOTAL_SC>1?Math.round(CUR/(TOTAL_SC-1)*100):0)+'%';
+  var sl=document.getElementById('sceneLabel');if(sl)sl.textContent='Módulo '+(CUR+1)+' de '+TOTAL_SC;
+  var bl=document.getElementById('bloomLabel');if(bl&&typeof BLOOM!=='undefined')bl.textContent='Bloom: '+(BLOOM[CUR]||'');
+  var sd=document.getElementById('scoreDisplay');if(sd&&typeof state!=='undefined')sd.textContent='Puntuación: '+Math.round(state.quizScore/4*100)+'%';
+  document.querySelectorAll('#navDots .nav-dot').forEach(function(d,i){d.className='nav-dot'+(i<CUR?' done':i===CUR?' cur':'');});
+}
+function buildDots(){}
+function updateDots(){UPD();}
+function updateUI(){UPD();}
+document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowDown')NAV(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')NAV(-1);});
+var _tx=0;document.addEventListener('touchstart',function(e){_tx=e.touches[0].clientX;},{passive:true});
+document.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-_tx;if(Math.abs(dx)>40){if(dx<0)NAV(1);else NAV(-1);}},{passive:true});
+
+var state={cur:0,total:9,quizScore:0,quizCurrent:0,quizAnswered:false,qInitDone:false,decisions:{1:null,2:null,3:null}};
+
+var BLOOM=["Analizar", "Analizar", "Analizar", "Analizar", "Analizar", "Analizar", "Analizar", "Evaluar", "Evaluar"];
+var CARDS=[{"name": "Reconexión por pago", "icon": "🔌", "color": "blue", "desc": "Cuando el cliente paga la deuda que generó el corte, la reconexión tiene un plazo normativo de 24 horas hábiles desde confirmado el pago. SLA interno: 6 horas. El especialista debe confirmar el pago en el sistema antes de comprometer el plazo."}, {"name": "Desconexión a solicitud", "icon": "✂️", "color": "teal", "desc": "Cuando el cliente solicita voluntariamente el corte del suministro (viaje largo, cambio de domicilio). Plazo: 24 a 48 horas hábiles. Requiere identificación del titular. El suministro puede reactivarse después mediante solicitud de reconexión."}, {"name": "Reposición fuera de plazo", "icon": "⚠️", "color": "red", "desc": "Cuando la empresa no cumple el plazo de reposición comprometido (falla técnica). El cliente tiene derecho a compensación según normativa. El ejecutivo/a debe registrar el caso, escalar a jefatura y no comprometer compensaciones sin autorización."}, {"name": "Plazo normativo vs SLA interno", "icon": "📊", "color": "purp", "desc": "Plazo normativo = mínimo legal obligatorio. SLA interno = objetivo del equipo, siempre más exigente. Ejemplo reconexión: normativo 24 horas, SLA interno 6 horas. Siempre comunicar el plazo normativo al cliente — nunca prometer el SLA interno como garantía."}, {"name": "Manejo de expectativa", "icon": "💬", "color": "amber", "desc": "Cuando el plazo no puede cumplirse, no decir 'no puedo' — decir 'lo que puedo hacer es [alternativa concreta]'. Si el cliente presiona por un plazo imposible, validar su urgencia y ofrecer un compromiso real: 'Voy a registrar como urgente y escalar a jefatura para acortar el tiempo'."}, {"name": "Compensación por fuera de plazo", "icon": "💰", "color": "green", "desc": "Si la empresa no cumple el plazo normativo de reposición, la normativa obliga a compensar al cliente. El ejecutivo/a no puede comprometer montos de compensación directamente — debe escalar a jefatura con el registro del caso documentado."}];
+var DEC={1:{correct:'B',A:{ok:false,msg:"Prometer 1 hora cuando el SLA interno es 6 horas genera un reclamo garantizado cuando no se cumple. El ejecutivo/a nunca puede prometer más de lo que el sistema puede cumplir."},B:{ok:true,msg:"Correcto. Informar el plazo normativo (24 horas), aclarar que se trabaja para ser más rápido, registrar como urgente y comprometerse a confirmar. Manejo de expectativa correcto sin prometer lo imposible."},C:{ok:false,msg:"\'No puedo hacer nada más\' cierra todas las opciones y frustra al cliente. El ejecutivo/a siempre puede registrar como urgente, escalar y comprometerse a confirmar — eso sí es algo concreto."}},2:{correct:'A',A:{ok:true,msg:"Correcto. Reconocer el incumplimiento, validar la molestia, documentar todo, escalar a jefatura y explicar el proceso de compensación sin comprometer montos. El ejecutivo/a no puede comprometer compensaciones directamente."},B:{ok:false,msg:"Decirle que \'30 horas es normal\' cuando se le prometieron 24 genera mayor frustración. El incumplimiento debe reconocerse — negar la realidad daña la confianza del cliente."},C:{ok:false,msg:"El ejecutivo/a no puede comprometer compensaciones directamente. Hacerlo sin autorización genera responsabilidades. El proceso correcto es documentar y escalar a jefatura."}},3:{correct:'C',A:{ok:false,msg:"Cortar sin verificar la identidad del titular es un error grave. La desconexión a solicitud requiere confirmar que quien pide es efectivamente el titular del suministro."},B:{ok:false,msg:"El trámite sí puede gestionarse por teléfono si el cliente tiene la información requerida. Decir que \'no se puede\' sin verificar genera frustración innecesaria."},C:{ok:true,msg:"Correcto. Explicar qué tipo de trámite es, qué requisitos tiene (identificación del titular), el plazo y qué pasa después (puede reconectar). Si tiene la información, procesar."}},};
+var QUIZ=[{"q": "¿Cuál es el plazo normativo para reconectar el suministro después de que el cliente paga su deuda?", "opts": ["6 horas", "12 horas hábiles", "24 horas hábiles", "48 horas hábiles"], "ans": 2, "exp": "El plazo normativo de reconexión es 24 horas hábiles desde confirmado el pago. El SLA interno del equipo es 6 horas (más exigente). Siempre comunicar el plazo normativo al cliente — nunca prometer el SLA interno como garantía."}, {"q": "El cliente dice que la empresa no cumplió el plazo de reposición prometido y pide compensación. ¿Qué haces?", "opts": ["Prometer compensación para calmar al cliente", "Decirle que los plazos son referenciales y que no hay compensación", "Registrar el caso documentando el incumplimiento, escalar a jefatura y explicar que la compensación será evaluada por el área correspondiente", "Ignorar el reclamo porque la falla fue por un evento climático"], "ans": 2, "exp": "El ejecutivo/a no puede comprometer compensaciones directamente. El proceso correcto es documentar el incumplimiento (horas sin suministro, plazo prometido vs. real), escalar a jefatura y explicar al cliente que la compensación que corresponda será evaluada por el área responsable."}, {"q": "¿Qué diferencia hay entre el plazo normativo y el SLA interno?", "opts": ["Son exactamente lo mismo", "El plazo normativo es el mínimo legal obligatorio; el SLA interno es el objetivo del equipo, siempre más exigente", "El SLA interno es el mínimo legal y el normativo es el objetivo", "El plazo normativo aplica solo a reconexiones; el SLA a fallas"], "ans": 1, "exp": "El plazo normativo es el mínimo legal que la empresa debe cumplir. El SLA interno es el objetivo del equipo, siempre más exigente que el normativo. Se comunica el normativo al cliente — nunca prometer el SLA interno como garantía porque puede no cumplirse en situaciones complejas."}, {"q": "¿Qué haces cuando un cliente exige un plazo de reconexión más corto que el normativo?", "opts": ["Prometer el plazo que pide para evitar el reclamo", "Informar el plazo normativo, registrar como urgente, escalar si es posible y comprometerse a confirmar cuando esté lista", "Decirle que 'no se puede' y cerrar la llamada", "Crear un ticket de emergencia aunque no corresponda la categoría"], "ans": 1, "exp": "Cuando el cliente presiona por un plazo más corto: informar el plazo normativo con claridad, registrar el caso como urgente, escalar si hay condiciones que lo justifiquen y comprometerse a confirmar cuando esté lista la reconexión. Nunca prometer lo que no se puede cumplir."}];
+var SYNTH=["Reconexión post-pago: plazo normativo 24 horas hábiles. SLA interno 6 horas. Comunicar siempre el normativo.", "Desconexión a solicitud: requiere identificación del titular. Plazo 24–48 horas. Puede reconectarse después.", "Reposición fuera de plazo: documentar incumplimiento, escalar a jefatura. El ejecutivo no puede comprometer compensaciones.", "Manejo de expectativa: informar plazo real, registrar como urgente si aplica, comprometerse a confirmar.", "Diferencia normativo vs SLA: normativo = mínimo legal. SLA = objetivo del equipo (siempre más exigente)."];
+var ERRORS=["Prometer el SLA interno (6 horas) como garantía al cliente — solo comprometer el plazo normativo.", "Comprometer compensaciones directamente sin autorización de jefatura.", "Decir 'no puedo hacer nada' cuando siempre hay algo concreto que se puede hacer (registrar, escalar, confirmar).", "Procesar una desconexión a solicitud sin verificar la identidad del titular.", "Ignorar un reclamo por reposición fuera de plazo — siempre documentar y escalar."];
+
+function buildCards(){{
+  var g=document.getElementById('cardGrid');if(!g)return;
+  CARDS.forEach(function(c){{
+    var d=document.createElement('div');d.className='rev-card '+c.color;
+    d.innerHTML='<h4><span class="card-icon">'+c.icon+'</span>'+c.name+'</h4><div class="rev-desc">'+c.desc+'</div><span class="rev-hint">👆 Toca para explorar</span>';
+    d.onclick=function(){{
+      if(this.classList.contains('revealed'))return;
+      this.classList.add('revealed');this.querySelector('.rev-hint').textContent='✓ Explorado';
+      state.cardRevealed=(state.cardRevealed||0)+1;
+      var cnt=document.getElementById('cardCnt');
+      if(cnt)cnt.textContent=state.cardRevealed+' de '+CARDS.length+' conceptos explorados';
+    }};
+    g.appendChild(d);
+  }});
+}}
+function buildSynth(){{
+  var b=document.getElementById('synthBody');if(!b)return;
+  b.innerHTML=SYNTH.map(function(s){{return '<div class="synth-item"><span class="si-icon">✓</span><p>'+s+'</p></div>';}}).join('');
+}}
+function buildErrors(){{
+  var b=document.getElementById('errorBody');if(!b)return;
+  b.innerHTML=ERRORS.map(function(e){{return '<div class="error-item"><span class="ei-icon">✗</span><p>'+e+'</p></div>';}}).join('');
+}}
+function decidir(n,opt){{
+  if(state.decisions[n])return;state.decisions[n]=opt;
+  var dec=DEC[n];var btns=document.querySelectorAll('#d'+n+' .opt');var letters=['A','B','C'];
+  btns.forEach(function(b,i){{if(letters[i]===dec.correct)b.classList.add('correct');else if(letters[i]===opt&&opt!==dec.correct)b.classList.add('wrong');else b.classList.add('disabled');}});
+  var res=dec[opt];var fb=document.getElementById('fb'+n);
+  fb.className='feedback show '+(res.ok?'ok':'ko');
+  fb.innerHTML=(res.ok?'<strong>✓ Correcto</strong> — ':'<strong>✗ Incorrecto</strong> — ')+res.msg;
+}}
+function showQuestion(){{
+  var q=QUIZ[state.quizCurrent];
+  document.getElementById('qCounter').textContent='Pregunta '+(state.quizCurrent+1)+' de '+QUIZ.length;
+  document.getElementById('qFb').className='feedback';document.getElementById('qNext').style.display='none';state.quizAnswered=false;
+  document.getElementById('qText').innerHTML='<p style="font-size:13.5px;line-height:1.7;margin-bottom:14px;font-weight:600;color:#1E293B">'+q.q+'</p>';
+  var opts=document.getElementById('qOpts');opts.innerHTML='';
+  q.opts.forEach(function(o,i){{var b=document.createElement('button');b.className='opt';b.innerHTML=o;b.onclick=(function(idx){{return function(){{answerQ(idx);}};}})(i);opts.appendChild(b);}});
+}}
+function answerQ(idx){{
+  if(state.quizAnswered)return;state.quizAnswered=true;
+  var q=QUIZ[state.quizCurrent];
+  document.querySelectorAll('#qOpts .opt').forEach(function(b,i){{if(i===q.ans)b.classList.add('correct');else if(i===idx&&idx!==q.ans)b.classList.add('wrong');else b.classList.add('disabled');}});
+  var ok=idx===q.ans;if(ok)state.quizScore++;
+  var fb=document.getElementById('qFb');fb.className='feedback show '+(ok?'ok':'ko');
+  fb.innerHTML='<strong>'+(ok?'✓ Correcto':'✗ Incorrecto')+'</strong> — '+q.exp;
+  document.getElementById('qNext').style.display='inline-block';
+  try{{SCORM.set('cmi.interactions.'+state.quizCurrent+'.id','q'+state.quizCurrent);SCORM.set('cmi.interactions.'+state.quizCurrent+'.result',ok?'correct':'wrong');}}catch(e){{}}
+}}
+function nextQ(){{state.quizCurrent++;if(state.quizCurrent<QUIZ.length)showQuestion();else NAV(1);}}
+function showResults(){{
+  var pct=Math.round(state.quizScore/QUIZ.length*100);
+  document.getElementById('resultScore').textContent=state.quizScore+'/'+QUIZ.length;
+  document.getElementById('resultPct').textContent=pct+'% correcto';
+  var sd=document.getElementById('scoreDisplay');if(sd)sd.textContent='Puntuación: '+pct+'%';
+  setTimeout(function(){{document.getElementById('resultBar').style.width=pct+'%';}},300);
+  var badges={{100:'🏆 Dominio total — ¡puntaje perfecto!',75:'👍 Buen desempeño — aprobado',0:'🔁 Bajo el umbral — revisa y reintenta'}};
+  var key=pct===100?100:pct>=75?75:0;
+  document.getElementById('resultBadge').innerHTML=badges[key];
+  if(pct<100&&document.getElementById('reviewBox')){{
+    document.getElementById('reviewBox').innerHTML='<div class="review-box"><div class="review-title">📌 Conceptos para repasar</div><ul class="review-list">'+ERRORS.map(function(e){{return '<li>'+e+'</li>';}}).join('')+'</ul></div>';
+  }}
+  SCORM.setComplete(pct);
+}}
+function restartQuiz(){{
+  state={{cur:0,total:TOTAL_SC,quizScore:0,quizCurrent:0,quizAnswered:false,qInitDone:false,decisions:{{1:null,2:null,3:null}}}};
+  document.querySelectorAll('.scene').forEach(function(s){{s.classList.remove('active');}});
+  document.getElementById('sc0').classList.add('active');CUR=0;
+  document.querySelectorAll('.opt').forEach(function(b){{b.className='opt';}});
+  document.querySelectorAll('.feedback').forEach(function(f){{f.className='feedback';f.innerHTML='';}});
+  document.querySelectorAll('.rev-card').forEach(function(c){{c.classList.remove('revealed');var h=c.querySelector('.rev-hint');if(h)h.textContent='👆 Toca para explorar';}});
+  document.getElementById('reviewBox').innerHTML='';
+  document.getElementById('resultBar').style.width='0%';
+  var sd=document.getElementById('scoreDisplay');if(sd)sd.textContent='Puntuación: 0%';
+  buildCards();buildSynth();buildErrors();UPD();
+}}
+
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL_SC=9;
+  UPD();
+  if(typeof buildCards==='function')buildCards();
+  if(typeof buildSynth==='function')buildSynth();
+  if(typeof buildErrors==='function')buildErrors();
+  
+  try{SCORM.set('cmi.core.lesson_status','incomplete');}catch(e){}
+});
+</script>
+</body>
+</html>

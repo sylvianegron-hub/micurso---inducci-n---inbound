@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Microcurso Inbound · Día 3 — Herramientas del cargo: C4C y Genesys</title>
+<style>
+/* ═══ INBOUND ENHANCEMENTS — diseño visual mejorado ═══ */
+.scene{display:none!important}.scene.active{display:block!important}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#F0F4F8;color:#1E293B;font-size:15px;line-height:1.6;overflow-y:scroll}
+.mc-wrap{max-width:780px;margin:0 auto;padding:14px 14px 110px}
+
+/* Header mejorado */
+.mc-header{background:linear-gradient(135deg,#1B3A6B 0%,#2563EB 100%);border-radius:14px;padding:18px 22px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 4px 16px rgba(27,58,107,.25)}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-icon{width:48px;height:48px;background:rgba(255,255,255,.18);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.mc-header h1{color:#fff;font-size:17px;font-weight:700;line-height:1.3;margin-bottom:3px}
+.mc-header p{color:#BFDBFE;font-size:11px}
+.score-display{background:rgba(255,255,255,.15);color:#E0F2FE;font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;white-space:nowrap;border:1px solid rgba(255,255,255,.2)}
+
+/* Progress */
+.progress-wrap{background:#E2E8F0;border-radius:20px;height:7px;margin-bottom:8px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.08)}
+.progress-bar{height:7px;background:linear-gradient(90deg,#0D9488,#2563EB);border-radius:20px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.scene-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.scene-info span{font-size:11px;color:#64748B}
+.bloom-badge{background:linear-gradient(135deg,#1B3A6B,#2563EB);color:#fff;font-size:10px;font-weight:700;padding:3px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(27,58,107,.3)}
+
+/* Slides */
+.slide{background:#fff;border-radius:14px;border:0.5px solid #E2E8F0;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.slide-hdr{padding:16px 20px;border-bottom:0.5px solid rgba(255,255,255,.3)}
+.hdr-blue{background:linear-gradient(135deg,#1B3A6B,#2563EB)}.hdr-blue .slide-tag,.hdr-blue h2{color:#fff}
+.hdr-teal{background:linear-gradient(135deg,#0D9488,#0F766E)}.hdr-teal .slide-tag,.hdr-teal h2{color:#fff}
+.hdr-amber{background:linear-gradient(135deg,#D97706,#B45309)}.hdr-amber .slide-tag,.hdr-amber h2{color:#fff}
+.hdr-purp{background:linear-gradient(135deg,#7C3AED,#6D28D9)}.hdr-purp .slide-tag,.hdr-purp h2{color:#fff}
+.hdr-red{background:linear-gradient(135deg,#DC2626,#B91C1C)}.hdr-red .slide-tag,.hdr-red h2{color:#fff}
+.hdr-green{background:linear-gradient(135deg,#16A34A,#15803D)}.hdr-green .slide-tag,.hdr-green h2{color:#fff}
+.slide-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;opacity:.85}
+.slide-hdr h2{font-size:16px;font-weight:700;line-height:1.3}
+.slide-body{padding:18px 20px}
+
+/* Tarjetas reveal mejoradas */
+.reveal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.rev-card{border-radius:12px;padding:14px 15px;cursor:pointer;border:2px solid transparent;transition:all .2s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.rev-card::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,.4),rgba(255,255,255,0));pointer-events:none}
+.rev-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.12)}
+.rev-card:active{transform:scale(.97)}
+.rev-card h4{font-size:13px;font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.rev-card .card-icon{font-size:18px;flex-shrink:0}
+.rev-desc{font-size:11.5px;line-height:1.55;display:none;margin:6px 0 4px}
+.rev-hint{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;display:inline-block;margin-top:5px;transition:all .2s}
+.rev-card.revealed .rev-desc{display:block}
+.rev-card.revealed .rev-hint{opacity:.7}
+.rev-card.blue{background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border-color:#BFDBFE}
+.rev-card.blue h4{color:#1D4ED8}.rev-card.blue .rev-desc{color:#1E40AF}.rev-card.blue .rev-hint{background:#BFDBFE;color:#1E40AF}
+.rev-card.teal{background:linear-gradient(135deg,#F0FDFA,#CCFBF1);border-color:#99F6E4}
+.rev-card.teal h4{color:#0F766E}.rev-card.teal .rev-desc{color:#115E59}.rev-card.teal .rev-hint{background:#99F6E4;color:#0F766E}
+.rev-card.purp{background:linear-gradient(135deg,#F5F3FF,#EDE9FE);border-color:#DDD6FE}
+.rev-card.purp h4{color:#6D28D9}.rev-card.purp .rev-desc{color:#5B21B6}.rev-card.purp .rev-hint{background:#DDD6FE;color:#5B21B6}
+.rev-card.amber{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border-color:#FDE68A}
+.rev-card.amber h4{color:#92400E}.rev-card.amber .rev-desc{color:#78350F}.rev-card.amber .rev-hint{background:#FDE68A;color:#78350F}
+.rev-card.red{background:linear-gradient(135deg,#FFF5F5,#FEE2E2);border-color:#FECACA}
+.rev-card.red h4{color:#991B1B}.rev-card.red .rev-desc{color:#7F1D1D}.rev-card.red .rev-hint{background:#FECACA;color:#7F1D1D}
+.rev-card.green{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-color:#BBF7D0}
+.rev-card.green h4{color:#166534}.rev-card.green .rev-desc{color:#14532D}.rev-card.green .rev-hint{background:#BBF7D0;color:#166534}
+.rev-card.gray{background:linear-gradient(135deg,#F8FAFC,#F1F5F9);border-color:#E2E8F0}
+.rev-card.gray h4{color:#334155}.rev-card.gray .rev-desc{color:#475569}.rev-card.gray .rev-hint{background:#E2E8F0;color:#334155}
+
+/* Summary box */
+.concept-summary{background:linear-gradient(135deg,#EFF6FF,#F0FDFA);border-left:4px solid #2563EB;border-radius:0 10px 10px 0;padding:12px 16px;margin-bottom:12px;font-size:13px;color:#1E293B;line-height:1.65}
+.concept-summary strong{color:#1B3A6B}
+.concept-counter{font-size:11px;color:#64748B;text-align:center;margin-top:10px;font-weight:500}
+
+/* Options */
+.opts{display:flex;flex-direction:column;gap:9px;margin:12px 0}
+.opt{border-radius:10px;padding:13px 16px;cursor:pointer;border:1.5px solid #E2E8F0;background:#fff;font-size:13px;text-align:left;color:#1E293B;transition:all .15s;line-height:1.5;width:100%;font-family:'Segoe UI',Arial,sans-serif;position:relative;overflow:hidden}
+.opt::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#E2E8F0;transition:background .15s}
+.opt:hover{border-color:#2563EB;background:#EFF6FF;transform:translateX(3px)}.opt:hover::before{background:#2563EB}
+.opt.correct{border-color:#16A34A;background:#F0FDF4;color:#14532D;pointer-events:none;font-weight:600}.opt.correct::before{background:#16A34A}
+.opt.wrong{border-color:#DC2626;background:#FFF5F5;color:#7F1D1D;pointer-events:none}.opt.wrong::before{background:#DC2626}
+.opt.disabled{opacity:.45;pointer-events:none}
+
+/* Feedback */
+.feedback{border-radius:10px;padding:12px 16px;font-size:12.5px;line-height:1.65;display:none;margin-top:8px}
+.feedback.show{display:block;animation:fadeIn .3s ease}
+.feedback.ok{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);color:#14532D;border:1px solid #BBF7D0}
+.feedback.ko{background:linear-gradient(135deg,#FFF5F5,#FEE2E2);color:#7F1D1D;border:1px solid #FECACA}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Case boxes */
+.case-box{border-radius:12px;padding:15px 18px;margin-bottom:14px;border:1.5px solid transparent}
+.case-box.amber{background:#FFFBEB;border-color:#FDE68A}.case-box.red{background:#FFF5F5;border-color:#FECACA}
+.case-box.teal{background:#F0FDFA;border-color:#99F6E4}.case-box.blue{background:#EFF6FF;border-color:#BFDBFE}
+.case-box.purp{background:#F5F3FF;border-color:#DDD6FE}
+.case-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.case-box.amber .case-label{color:#92400E}.case-box.red .case-label{color:#991B1B}
+.case-box.teal .case-label{color:#0F766E}.case-box.blue .case-label{color:#1D4ED8}
+.case-box.purp .case-label{color:#6D28D9}
+.case-box p{font-size:13px;line-height:1.65;color:#1E293B}
+
+/* Mini cards */
+.card-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.mini-card{border-radius:12px;padding:14px 12px;text-align:center;transition:transform .2s}
+.mini-card:hover{transform:translateY(-2px)}
+.mini-card.blue{background:linear-gradient(135deg,#EFF6FF,#DBEAFE)}.mini-card.blue h4{color:#1D4ED8}.mini-card.blue p{color:#3B82F6}
+.mini-card.teal{background:linear-gradient(135deg,#F0FDFA,#CCFBF1)}.mini-card.teal h4{color:#0F766E}.mini-card.teal p{color:#14B8A6}
+.mini-card.amber{background:linear-gradient(135deg,#FFFBEB,#FEF3C7)}.mini-card.amber h4{color:#92400E}.mini-card.amber p{color:#D97706}
+.mini-card.purp{background:linear-gradient(135deg,#F5F3FF,#EDE9FE)}.mini-card.purp h4{color:#6D28D9}.mini-card.purp p{color:#8B5CF6}
+.mc-icon{font-size:26px;margin-bottom:8px}
+.mini-card h4{font-size:12px;font-weight:700;margin-bottom:3px}
+.mini-card p{font-size:10.5px}
+
+/* Info / tip boxes */
+.intro-text{font-size:13.5px;line-height:1.75;color:#1E293B;margin-bottom:14px}
+.hint-text{font-size:12px;color:#64748B;margin-bottom:8px;font-style:italic}
+.info-box{background:linear-gradient(135deg,#F8FAFC,#F1F5F9);border-radius:10px;padding:11px 15px;margin-top:14px;font-size:12.5px;color:#475569;border:1px solid #E2E8F0;display:flex;align-items:center;gap:8px}
+.tip-box{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border-radius:10px;padding:11px 15px;margin-top:12px;font-size:12px;color:#78350F;border:1px solid #FDE68A}
+.alert-box{background:linear-gradient(135deg,#FFF5F5,#FEE2E2);border-radius:10px;padding:11px 15px;margin-top:12px;font-size:12px;color:#7F1D1D;border:1px solid #FECACA;display:flex;align-items:flex-start;gap:8px}
+
+/* Synth / error items */
+.synth-item{display:flex;gap:10px;align-items:flex-start;padding:10px 13px;background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-radius:9px;margin-bottom:8px;border:1px solid #BBF7D0}
+.synth-item .si-icon{color:#16A34A;font-size:16px;flex-shrink:0;margin-top:1px}
+.synth-item p{font-size:12.5px;color:#14532D;line-height:1.55}
+.error-item{display:flex;gap:10px;align-items:flex-start;padding:10px 13px;background:linear-gradient(135deg,#FFF5F5,#FEE2E2);border-radius:9px;margin-bottom:8px;border:1px solid #FECACA}
+.error-item .ei-icon{color:#DC2626;font-size:16px;flex-shrink:0;margin-top:1px}
+.error-item p{font-size:12.5px;color:#7F1D1D;line-height:1.55}
+
+/* Quiz */
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.btn-primary{background:linear-gradient(135deg,#1B3A6B,#2563EB);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Segoe UI',Arial,sans-serif;box-shadow:0 3px 10px rgba(27,58,107,.3);transition:all .15s}
+.btn-primary:hover{background:linear-gradient(135deg,#1e4284,#2d6ef7);transform:translateY(-1px)}
+.btn-primary:active{transform:scale(.97)}
+.btn-secondary{background:#F1F5F9;color:#1E293B;border:1px solid #CBD5E1;border-radius:10px;padding:11px 22px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Segoe UI',Arial,sans-serif;transition:all .15s}
+.btn-secondary:hover{background:#E2E8F0}
+
+/* Result card */
+.result-card{background:linear-gradient(135deg,#1B3A6B 0%,#2563EB 100%);border-radius:16px;padding:28px;text-align:center;color:#fff;margin-bottom:16px;box-shadow:0 8px 24px rgba(27,58,107,.35)}
+.result-title{font-size:13px;color:#BFDBFE;margin-bottom:8px;font-weight:500}
+.result-score{font-size:58px;font-weight:800;line-height:1;margin-bottom:8px}
+.result-pct{font-size:15px;color:#BFDBFE;margin-bottom:18px}
+.result-bar-wrap{background:rgba(255,255,255,.2);border-radius:20px;height:10px;overflow:hidden;margin-bottom:18px}
+.result-bar{height:10px;background:linear-gradient(90deg,#34D399,#10B981);border-radius:20px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.result-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);border-radius:20px;padding:8px 18px;font-size:12px;color:#E0F2FE;border:1px solid rgba(255,255,255,.2)}
+.result-actions{text-align:center;margin-top:16px}
+.review-box{background:#fff;border-radius:12px;border:1px solid #E2E8F0;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.review-title{font-size:12px;font-weight:700;color:#1E293B;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.review-list{font-size:12px;color:#64748B;line-height:1.85;padding-left:16px}
+
+/* SAP */
+.sap-lbl{font-size:11.5px;color:#64748B;display:block;margin-bottom:4px;font-weight:500}
+.sap-input{width:100%;border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 12px;font-size:13px;font-family:monospace;background:#F8FAFC;color:#1E293B;transition:border-color .15s}
+.sap-input:focus{outline:none;border-color:#2563EB;background:#EFF6FF}
+.formula-box{background:linear-gradient(135deg,#EFF6FF,#E0F2FE);border-radius:12px;padding:16px 18px;border:1px solid #BFDBFE;margin-bottom:14px}
+.formula-title{font-size:12px;font-weight:700;color:#1D4ED8;margin-bottom:10px}
+.formula{font-size:14px;font-weight:700;color:#1D4ED8;text-align:center;padding:10px;background:rgba(255,255,255,.7);border-radius:8px;margin:6px 0;font-family:monospace}
+.fex{border-radius:9px;padding:11px 13px}
+.fex.blue{background:rgba(255,255,255,.75);border:1px solid #BFDBFE}
+.fex.teal{background:rgba(255,255,255,.75);border:1px solid #99F6E4}
+.fex-row{display:flex;justify-content:space-between;font-size:11.5px;color:#64748B;margin-bottom:4px}
+.fex-title{font-size:10.5px;font-weight:700;margin-bottom:7px;color:#1D4ED8}
+.fex-total{font-size:12px;font-weight:700;color:#fff;border-radius:6px;padding:6px 10px;text-align:center;margin-top:7px}
+.formula-examples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.calc-total{background:linear-gradient(135deg,#1B3A6B,#2563EB);color:#fff;border-radius:9px;padding:9px 15px;font-size:14px;font-weight:800;text-align:center;margin-top:8px}
+
+/* Nav fixed */
+.nav-fixed{position:fixed;bottom:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#1B3A6B,#2563EB);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 -4px 20px rgba(27,58,107,.4)}
+.nav-info{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.nav-counter{color:#BFDBFE;font-size:11px;font-weight:600}
+.nav-dots-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .35s cubic-bezier(.4,0,.2,1)}
+.nav-dot.done{background:#34D399}.nav-dot.cur{background:#fff;width:22px;border-radius:4px}
+.btn-nav-big{background:#fff;color:#1B3A6B;border:none;border-radius:11px;padding:12px 20px;font-size:15px;font-weight:800;cursor:pointer;min-width:110px;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 3px 10px rgba(0,0,0,.2);touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:rgba(27,58,107,.2);transition:transform .1s,background .15s,box-shadow .15s;font-family:'Segoe UI',Arial,sans-serif}
+.btn-nav-big:hover{background:#EFF6FF;box-shadow:0 5px 14px rgba(0,0,0,.2)}
+.btn-nav-big:active{transform:scale(.94)}
+.btn-nav-big:disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
+.btn-nav-big.next-btn{background:linear-gradient(135deg,#0D9488,#0F766E);color:#fff}
+.btn-nav-big.next-btn:hover{background:linear-gradient(135deg,#14B8A6,#0D9488)}
+
+/* Result banner */
+#resultBanner{display:none;border-radius:12px;padding:22px;margin:14px 0;text-align:center;font-size:14px;line-height:1.9}
+
+/* Flow steps */
+.flow-step{border-radius:11px;padding:13px 16px;margin-bottom:9px;border:2px solid transparent;background:#F8FAFC;transition:all .25s}
+.flow-step.active-step{background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border-color:#BFDBFE;box-shadow:0 4px 12px rgba(37,99,235,.15)}
+.flow-step.done-step{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-color:#BBF7D0}
+.flow-step h4{font-size:13px;font-weight:700;margin-bottom:5px}
+.flow-step.active-step h4{color:#1D4ED8}.flow-step.done-step h4{color:#15803D}
+
+/* Process timeline */
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,#2563EB,#0D9488)}
+.tl-item{position:relative;margin-bottom:14px}
+.tl-dot{position:absolute;left:-24px;top:4px;width:14px;height:14px;border-radius:50%;background:#2563EB;border:2px solid #fff;box-shadow:0 0 0 2px #2563EB}
+.tl-dot.teal{background:#0D9488;box-shadow:0 0 0 2px #0D9488}
+.tl-dot.amber{background:#D97706;box-shadow:0 0 0 2px #D97706}
+.tl-dot.red{background:#DC2626;box-shadow:0 0 0 2px #DC2626}
+.tl-content{background:#fff;border-radius:10px;padding:10px 14px;border:1px solid #E2E8F0;font-size:12.5px;color:#1E293B;line-height:1.55}
+.tl-title{font-weight:700;font-size:12px;margin-bottom:3px;color:#1B3A6B}
+</style>
+</head>
+<body>
+<div id="resultBanner"></div>
+<div class="mc-wrap">
+<header class="mc-header">
+  <div class="header-left">
+    <div class="header-icon">💻</div>
+    <div>
+      <h1>Herramientas del cargo: C4C y Genesys</h1>
+      <p>Inbound · Día 3 · Bloom: Aplicar · 6–8 min</p>
+    </div>
+  </div>
+  <div class="score-display" id="scoreDisplay">Puntuación: 0%</div>
+</header>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+<div class="scene-info"><span id="sceneLabel">Módulo 1 de 9</span><span id="bloomLabel" class="bloom-badge">Bloom: Aplicar</span></div>
+<section class="scene active" id="sc0">
+<div class="slide"><div class="slide-hdr hdr-blue"><span class="slide-tag">🎯 Bienvenida</span><h2>¿Qué vas a dominar hoy?</h2></div>
+<div class="slide-body">
+<p class="intro-text">Hoy aprenderás a usar tus <strong>dos herramientas principales del cargo</strong>: C4C para gestionar tickets y Genesys para controlar tu disponibilidad. Las usarás en paralelo durante cada llamada.</p>
+<div class="card-grid-3">
+  <div class="mini-card blue"><div class="mc-icon">💻</div><h4>C4C — CRM</h4><p>Flujo completo de tickets</p></div>
+  <div class="mini-card purp"><div class="mc-icon">🎚️</div><h4>Genesys</h4><p>Estados y disponibilidad</p></div>
+  <div class="mini-card amber"><div class="mc-icon">📝</div><h4>Observaciones OA</h4><p>Nomenclatura correcta</p></div>
+</div>
+<div class="info-box">⏱ <strong>Duración: 7 min</strong> — 6 conceptos interactivos, simulación del flujo, 3 casos de decisión y quiz de 4 preguntas.</div>
+</div></div></section><section class="scene" id="sc1">
+<div class="slide"><div class="slide-hdr hdr-blue"><span class="slide-tag">📚 Módulo 1 de 4 — Conceptos clave</span><h2>C4C y Genesys — toca cada tarjeta para explorarla</h2></div>
+<div class="slide-body">
+<div class="concept-summary">C4C es el CRM donde vive toda la gestión: crear tickets, consultar historial y registrar observaciones. Genesys controla tu <strong>disponibilidad y el flujo de llamadas</strong>. Ambas herramientas funcionan en paralelo durante la atención.</div>
+<p class="hint-text">Haz clic en cada tarjeta para ver cómo funciona cada herramienta, cuándo usarla y qué errores evitar.</p>
+<div class="reveal-grid" id="cardGrid"></div>
+<div class="concept-counter" id="cardCnt">0 de 6 conceptos explorados</div>
+</div></div></section><section class="scene" id="sc2">
+<div class="slide"><div class="slide-hdr hdr-teal"><span class="slide-tag">🔄 Módulo 2 de 4 — Simulación del flujo</span><h2>Una llamada completa — qué haces en cada momento</h2></div>
+<div class="slide-body">
+<div class="concept-summary">Durante una llamada real usas <strong>ambas herramientas en paralelo</strong>: Genesys cambia de estado automáticamente al recibir la llamada, C4C lo abres tú en paralelo para buscar al cliente mientras saludas.</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+  <div>
+    <div style="font-size:12px;font-weight:700;color:#1D4ED8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">🎚️ Genesys</div>
+    <div class="flow-step active-step"><h4>Disponible → En llamada</h4><p style="font-size:11.5px;color:#475569">Automático al recibir la llamada. No hacer nada en Genesys.</p></div>
+    <div class="flow-step" style="margin-top:6px"><h4>En llamada (toda la atención)</h4><p style="font-size:11.5px;color:#475569">Tu estado es automático. Concentrarse en el cliente y en C4C.</p></div>
+    <div class="flow-step" style="margin-top:6px"><h4>ACW (al colgar)</h4><p style="font-size:11.5px;color:#475569">Inmediatamente al colgar → estado ACW → registrar en C4C → Disponible.</p></div>
+  </div>
+  <div>
+    <div style="font-size:12px;font-weight:700;color:#0F766E;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">💻 C4C</div>
+    <div class="flow-step active-step" style="background:linear-gradient(135deg,#F0FDFA,#CCFBF1);border-color:#99F6E4"><h4>1. Buscar cliente (RUT/N° servicio)</h4><p style="font-size:11.5px;color:#475569">Mientras saludas al cliente. Revisar historial y tickets activos.</p></div>
+    <div class="flow-step" style="margin-top:6px;background:#F8FAFC"><h4>2. Identificar ticket activo o crear nuevo</h4><p style="font-size:11.5px;color:#475569">Si ya hay ticket abierto → trabajar sobre él. Si no → crear nuevo.</p></div>
+    <div class="flow-step" style="margin-top:6px;background:#F8FAFC"><h4>3. Observación + guardar + confirmar N°</h4><p style="font-size:11.5px;color:#475569">Motivo + acción + compromiso. Confirmar número al cliente antes de colgar.</p></div>
+  </div>
+</div>
+<div class="alert-box"><span>⚠️</span><span>Nunca uses el estado 'No disponible' sin motivo registrado, ni te quedes en ACW para hacer otras tareas. El sistema registra los tiempos de cada estado.</span></div>
+</div></div></section><section class="scene" id="sc3">
+<div class="slide"><div class="slide-hdr hdr-amber"><span class="slide-tag">🎯 Caso 1 de 3 — Decisión</span><h2>Cliente llama por segundo reclamo — ¿cómo abres el caso en C4C?</h2></div>
+<div class="slide-body">
+<div class="case-box amber"><div class="case-label">⚡ Situación real</div>
+<p>Don Marcos llama diciendo que "ya llamó la semana pasada por lo mismo y nadie le solucionó nada". Buscas en C4C y encuentras que hay un ticket activo (N° 58743) por el mismo problema — aún en estado 'En proceso'.</p>
+</div>
+<p class="hint-text">¿Qué haces en C4C?</p>
+<div class="opts" id="d1">
+  <button class="opt" onclick="decidir(1,'A')">A) Crear un ticket nuevo para tener un registro fresco del segundo reclamo.</button>
+  <button class="opt" onclick="decidir(1,'B')">B) Abrir el ticket activo N° 58743, agregar una nueva observación con la llamada de hoy y actualizar el estado si corresponde.</button>
+  <button class="opt" onclick="decidir(1,'C')">C) Buscar al cliente por su número de teléfono para ir más rápido.</button>
+</div>
+<div class="feedback" id="fb1"></div>
+</div></div></section><section class="scene" id="sc4">
+<div class="slide"><div class="slide-hdr hdr-purp"><span class="slide-tag">📝 Módulo 3 de 4 — Observaciones perfectas</span><h2>¿Cómo se escribe una observación de calidad?</h2></div>
+<div class="slide-body">
+<div class="concept-summary">Una observación de calidad permite que cualquier ejecutivo/a que tome el caso después entienda <strong>exactamente qué pasó y qué sigue</strong>, sin necesidad de rellamar al cliente.</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0">
+  <div style="background:linear-gradient(135deg,#FFF5F5,#FEE2E2);border-radius:11px;padding:14px;border:1.5px solid #FECACA">
+    <div style="font-size:11px;font-weight:800;color:#991B1B;margin-bottom:8px">❌ Observación pobre</div>
+    <div style="font-size:12px;color:#7F1D1D;font-family:monospace;background:rgba(255,255,255,.6);border-radius:6px;padding:8px;line-height:1.6">"Cliente llama por boleta. Se revisó y se informó. Se cierra."</div>
+    <div style="font-size:10px;color:#991B1B;margin-top:6px">Problemas: sin motivo específico, sin acción concreta, sin compromiso, sin código.</div>
+  </div>
+  <div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-radius:11px;padding:14px;border:1.5px solid #BBF7D0">
+    <div style="font-size:11px;font-weight:800;color:#14532D;margin-bottom:8px">✓ Observación de calidad</div>
+    <div style="font-size:12px;color:#15803D;font-family:monospace;background:rgba(255,255,255,.6);border-radius:6px;padding:8px;line-height:1.6">"Motivo: reclamo cobro ítem cargo fijo período enero. Acción: verificado FPL9, error en proporcionalidad 42 días. NC emitida por $1.280 neto. Compromiso: ajuste visible en próxima boleta (febrero). Cod: FAC-NC-01."</div>
+    <div style="font-size:10px;color:#16A34A;margin-top:6px">Incluye: motivo + acción tomada + compromiso (qué+cuándo) + código de categoría.</div>
+  </div>
+</div>
+</div></div></section><section class="scene" id="sc5">
+<div class="slide"><div class="slide-hdr hdr-red"><span class="slide-tag">🎯 Caso 2 de 3 — Decisión</span><h2>Genesys — ¿qué estado usas en cada momento?</h2></div>
+<div class="slide-body">
+<div class="case-box red"><div class="case-label">⚡ Situación real</div>
+<p>Terminaste una llamada larga y necesitas: (1) Registrar la observación en C4C, (2) Ir al baño (3 min), y (3) Preparar la respuesta de un correo de seguimiento. ¿Cuál es la secuencia correcta de estados en Genesys?</p>
+</div>
+<p class="hint-text">¿Qué secuencia de estados usas?</p>
+<div class="opts" id="d2">
+  <button class="opt" onclick="decidir(2,'A')">A) Quedarme en ACW para hacer las 3 cosas y luego volver a Disponible.</button>
+  <button class="opt" onclick="decidir(2,'B')">B) No disponible para hacer todo sin interrupción.</button>
+  <button class="opt" onclick="decidir(2,'C')">C) ACW → registrar observación C4C → Disponible → al rato No disponible (baño, motivo registrado) → Disponible → el correo lo hago en el siguiente ACW o fuera de horario de atención.</button>
+</div>
+<div class="feedback" id="fb2"></div>
+</div></div></section><section class="scene" id="sc6">
+<div class="slide"><div class="slide-hdr hdr-teal"><span class="slide-tag">🎯 Caso 3 de 3 — Decisión</span><h2>¿Cómo redactas esta observación?</h2></div>
+<div class="slide-body">
+<div class="case-box teal"><div class="case-label">⚡ Situación real</div>
+<p>Doña Ana llamó porque no tiene suministro desde hace 2 horas. Verificaste en el sistema: hay una falla registrada en su zona. Le informaste el tiempo estimado de reposición (4 horas) y registraste el caso. ¿Cuál es la mejor observación para el ticket?</p>
+</div>
+<p class="hint-text">¿Cuál es la observación correcta?</p>
+<div class="opts" id="d3">
+  <button class="opt" onclick="decidir(3,'A')">A) "Motivo: sin suministro 2h. Falla masiva activa en la zona según sistema. Tiempo estimado reposición: 4 horas desde el corte. Se informó a cliente. No requiere técnico individual. Seguimiento automático por brigada. Cod: FALLA-ZONA-01."</button>
+  <button class="opt" onclick="decidir(3,'B')">B) "La señora Ana llamó porque no tiene luz. Le dije que había una falla y que en 4 horas le volvería la luz. Quedó conforme aunque un poco preocupada por sus niños."</button>
+  <button class="opt" onclick="decidir(3,'C')">C) "Falla zona. Informada. Esperar."</button>
+</div>
+<div class="feedback" id="fb3"></div>
+</div></div></section><section class="scene" id="sc7">
+<div class="slide"><div class="slide-hdr hdr-amber"><span class="slide-tag">✏️ Quiz de cierre — 4 preguntas</span><h2>Demuestra lo que aprendiste</h2></div>
+<div class="slide-body">
+  <p class="hint-text">Lee cada pregunta con calma — hay retroalimentación detallada en cada respuesta.</p>
+  <div id="qText"></div><div id="qOpts" class="opts"></div><div id="qFb" class="feedback"></div>
+  <div class="quiz-nav"><span id="qCounter" class="hint-text" style="font-size:12px;font-weight:600">Pregunta 1 de 4</span>
+  <button class="btn-primary" id="qNext" onclick="nextQ()" style="display:none">Siguiente &#9654;</button></div>
+</div></div></section>
+<section class="scene" id="sc8">
+<div class="result-card"><div class="result-title">Microcurso Inbound completado</div>
+<div class="result-score" id="resultScore">0/4</div><div class="result-pct" id="resultPct">0%</div>
+<div class="result-bar-wrap"><div class="result-bar" id="resultBar" style="width:0%"></div></div>
+<div class="result-badge" id="resultBadge">Calculando resultado...</div></div>
+<div id="reviewBox"></div>
+<div class="result-actions"><button class="btn-secondary" onclick="restartQuiz()">&#8635; Reiniciar microcurso</button></div>
+</section>
+</div>
+<div class="nav-fixed">
+  <button class="btn-nav-big" id="btnPrev" onclick="NAV(-1)" disabled>&#9664; Anterior</button>
+  <div class="nav-info">
+    <span class="nav-counter" id="navCnt">1 / 9</span>
+    <div class="nav-dots-row" id="navDots"><div class="nav-dot cur"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div></div>
+  </div>
+  <button class="btn-nav-big next-btn" id="btnNext" onclick="NAV(1)">Siguiente &#9654;</button>
+</div>
+<script>
+var SCORM=(function(){
+  var a=null,ok=false;
+  function find(w){var t=0;try{while(!w.API_1484_11&&w.parent&&w.parent!==w&&t<10){w=w.parent;t++;}}catch(e){}return w.API_1484_11||null;}
+  (function(){try{a=find(window);if(!a&&window.opener)a=find(window.opener);if(a){var r=a.Initialize('');ok=(r==='true'||r===true);}}catch(e){}})();
+  function sv(k,v){try{if(a&&ok)a.SetValue(k,v);}catch(e){}}
+  function done(p){
+    try{sv('cmi.score.raw',p);sv('cmi.score.min',0);sv('cmi.score.max',100);sv('cmi.score.scaled',(p/100).toFixed(4));sv('cmi.completion_status','completed');sv('cmi.success_status',p>=75?'passed':'failed');sv('cmi.session_time','PT7M0S');if(a&&ok){a.Commit('');a.Terminate('');}}catch(e){}
+    var b=document.getElementById('resultBanner');
+    if(b){b.style.cssText='display:block;border-radius:12px;padding:22px;margin:14px 0;text-align:center;font-size:14px;line-height:1.9;background:'+(p>=75?'linear-gradient(135deg,#F0FDF4,#DCFCE7)':'linear-gradient(135deg,#FFF5F5,#FEE2E2)')+';color:'+(p>=75?'#14532D':'#7F1D1D')+';border:2px solid '+(p>=75?'#86EFAC':'#FCA5A5');
+    b.innerHTML='<div style="font-size:38px;margin-bottom:8px">'+(p>=75?'🎉':'⚠️')+'</div><strong style="font-size:18px">'+(p>=75?'¡Aprobado! '+p+'%':'No aprobado — '+p+'%')+'</strong><br><span style="font-size:13px">'+(p>=75?'Módulo completado correctamente. ¡Continúa con el siguiente día!':'Umbral mínimo 75%. Revisa el contenido y vuelve a intentarlo.')+'</span>';}
+  }
+  return{set:sv,get:function(){return'';},commit:function(){},finish:function(){},setComplete:done,initialized:ok};
+})();
+
+var CUR=0,TOTAL_SC=0;
+function NAV(d){
+  var n=CUR+d;if(n<0||n>=TOTAL_SC)return;
+  var prev=document.getElementById('sc'+CUR);if(prev)prev.classList.remove('active');
+  CUR=n;if(typeof state!=='undefined')state.cur=CUR;
+  var next=document.getElementById('sc'+CUR);if(next)next.classList.add('active');
+  UPD();
+  if(CUR===TOTAL_SC-2&&typeof state!=='undefined'&&!state.qInitDone){state.qInitDone=true;if(typeof showQuestion==='function')showQuestion();}
+  if(CUR===TOTAL_SC-1&&typeof showResults==='function')showResults();
+  window.scrollTo(0,0);
+}
+function goScene(d){NAV(d);}
+function UPD(){
+  document.getElementById('navCnt').textContent=(CUR+1)+' / '+TOTAL_SC;
+  document.getElementById('btnPrev').disabled=(CUR===0);
+  document.getElementById('btnNext').disabled=(CUR===TOTAL_SC-1);
+  var pb=document.getElementById('progressBar');if(pb)pb.style.width=(TOTAL_SC>1?Math.round(CUR/(TOTAL_SC-1)*100):0)+'%';
+  var sl=document.getElementById('sceneLabel');if(sl)sl.textContent='Módulo '+(CUR+1)+' de '+TOTAL_SC;
+  var bl=document.getElementById('bloomLabel');if(bl&&typeof BLOOM!=='undefined')bl.textContent='Bloom: '+(BLOOM[CUR]||'');
+  var sd=document.getElementById('scoreDisplay');if(sd&&typeof state!=='undefined')sd.textContent='Puntuación: '+Math.round(state.quizScore/4*100)+'%';
+  document.querySelectorAll('#navDots .nav-dot').forEach(function(d,i){d.className='nav-dot'+(i<CUR?' done':i===CUR?' cur':'');});
+}
+function buildDots(){}
+function updateDots(){UPD();}
+function updateUI(){UPD();}
+document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowDown')NAV(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')NAV(-1);});
+var _tx=0;document.addEventListener('touchstart',function(e){_tx=e.touches[0].clientX;},{passive:true});
+document.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-_tx;if(Math.abs(dx)>40){if(dx<0)NAV(1);else NAV(-1);}},{passive:true});
+
+var state={cur:0,total:9,quizScore:0,quizCurrent:0,quizAnswered:false,qInitDone:false,decisions:{1:null,2:null,3:null}};
+
+var BLOOM=["Aplicar", "Aplicar", "Aplicar", "Aplicar", "Aplicar", "Aplicar", "Aplicar", "Evaluar", "Evaluar"];
+var CARDS=[{"name": "¿Qué es C4C?", "icon": "💻", "color": "blue", "desc": "SAP Cloud for Customer (C4C) es el CRM del cargo. Aquí se crean y gestionan todos los tickets, se consulta el historial del cliente y se registran las observaciones de cada interacción. Es la herramienta central del ejecutivo/a inbound."}, {"name": "Flujo completo C4C", "icon": "🔄", "color": "teal", "desc": "1)Buscar cliente (por RUT o N° servicio). 2)Revisar historial y tickets activos. 3)Crear ticket nuevo (tipo + descripción). 4)Asignar categoría y prioridad. 5)Escribir observación con nomenclatura OA. 6)Guardar y confirmar número al cliente."}, {"name": "Estados de Genesys", "icon": "🎚️", "color": "purp", "desc": "Disponible (recibe llamadas), No disponible + motivo (pausa autorizada), En llamada (automático), Post-llamada/ACW (registrando en C4C), Capacitación. Cada estado tiene un impacto en las métricas del equipo — no cambiar sin criterio."}, {"name": "Nomenclatura OAs", "icon": "📝", "color": "amber", "desc": "Las observaciones en tickets deben ser precisas, breves y con los códigos correctos. Incluir: motivo del contacto, acción tomada, compromisos al cliente (plazo + acción), y código de categoría. Sin jerga interna — el texto lo puede leer el cliente."}, {"name": "Tarjeta de referencia C4C", "icon": "🗂️", "color": "green", "desc": "Atajos clave: F4 = buscar cliente, Ctrl+N = nuevo ticket, Ctrl+S = guardar. Código de categoría en la última columna del menú desplegable. El campo 'Descripción corta' es el que el cliente ve en el portal de autogestión."}, {"name": "ACW — tiempo de post-llamada", "icon": "⏱️", "color": "gray", "desc": "ACW (After Call Work) es el tiempo entre que termina la llamada y que te vuelves a poner disponible. Úsalo para registrar la observación y cerrar correctamente el ticket. El ACW excesivo afecta el AHT del equipo — ser eficiente es parte del rol."}];
+var DEC={1:{correct:'B',A:{ok:false,msg:"Crear el ticket sin antes revisar el historial es un error frecuente — puede haber un ticket activo por el mismo problema, duplicando trabajo y confundiendo al cliente."},B:{ok:true,msg:"Correcto. El flujo es siempre: buscar cliente → revisar historial y tickets activos → solo entonces crear ticket nuevo si no existe uno. Esto evita duplicados y da contexto completo al ejecutivo."},C:{ok:false,msg:"El número de teléfono no es el identificador principal en C4C. El RUT o número de servicio permite encontrar exactamente el punto de suministro correcto, especialmente cuando el cliente tiene varios suministros."}},2:{correct:'C',A:{ok:false,msg:"El estado \'No disponible\' sin motivo registrado genera alertas de gestión. Cada pausa debe tener su motivo: baño, reunión, capacitación, etc. El sistema registra todo."},B:{ok:false,msg:"Quedarse en estado \'Post-llamada/ACW\' más tiempo del necesario para hacer otras tareas afecta las métricas del equipo. El ACW es solo para registrar el ticket de la llamada recién terminada."},C:{ok:true,msg:"Correcto. Al terminar la llamada: usar ACW para registrar la observación en C4C → guardar el ticket → volver al estado \'Disponible\'. Este flujo es el más eficiente y el que cuida el AHT."}},3:{correct:'A',A:{ok:true,msg:"Correcto. Una observación efectiva incluye: motivo del contacto, acción tomada, compromiso al cliente (qué + cuándo) y código de categoría. Sin jerga interna que el cliente no entienda."},B:{ok:false,msg:"Las observaciones deben ser precisas y breves — no un relato completo de la llamada. El objetivo es que quien lea el ticket después entienda rápidamente qué pasó y qué sigue."},C:{ok:false,msg:"El campo \'Descripción corta\' puede ser visible para el cliente en el portal de autogestión. Nunca incluir información interna ni opiniones sobre el cliente en ese campo."}},};
+var QUIZ=[{"q": "¿Cuál es el orden correcto del flujo en C4C al atender una llamada?", "opts": ["Crear ticket → buscar cliente → escribir observación → guardar", "Buscar cliente → revisar historial → crear ticket si no existe → observación → guardar", "Abrir ticket nuevo directamente → llenar los datos del cliente → guardar", "Revisar historial → crear ticket → buscar cliente → guardar"], "ans": 1, "exp": "El orden es: buscar cliente (RUT o N° servicio) → revisar historial y tickets activos → crear ticket nuevo solo si no existe uno → escribir observación → guardar y confirmar número al cliente."}, {"q": "¿Cuál es el estado correcto de Genesys mientras estás registrando el ticket después de terminar una llamada?", "opts": ["Disponible — para recibir la siguiente llamada", "No disponible — para tener tiempo sin interrupciones", "Post-llamada / ACW — tiempo específico para el registro del ticket", "Capacitación — para estudiar sin llamadas"], "ans": 2, "exp": "ACW (After Call Work) es el estado diseñado exactamente para el tiempo de registro post-llamada. Usarlo correctamente es parte del protocolo — permite registrar bien sin afectar innecesariamente la disponibilidad del equipo."}, {"q": "¿Qué información DEBE contener una observación de ticket bien redactada?", "opts": ["Solo el nombre del cliente y el motivo de la llamada", "Motivo del contacto, acción tomada, compromiso al cliente (qué + cuándo) y código de categoría", "Una descripción detallada de toda la conversación incluyendo el tono del cliente", "El nombre del ejecutivo y la hora de la llamada únicamente"], "ans": 1, "exp": "Una observación efectiva tiene 4 elementos: motivo del contacto (por qué llamó), acción tomada (qué hiciste), compromiso al cliente (qué sigue y cuándo) y código de categoría. Sin jerga interna."}, {"q": "¿Dónde encuentras el historial completo de tickets anteriores de un cliente en C4C?", "opts": ["En la pestaña 'Descripción' del ticket actual", "En el panel lateral de 'Actividad' o 'Historial' del perfil del cliente", "Hay que llamar a un supervisor para acceder al historial", "En el sistema Genesys, no en C4C"], "ans": 1, "exp": "El historial de tickets anteriores está en el perfil del cliente en C4C, en la pestaña 'Actividad' o 'Historial'. Revisarlo antes de crear un nuevo ticket evita duplicados y da contexto completo sobre el caso."}];
+var SYNTH=["Flujo C4C: buscar cliente (RUT/N° servicio) → historial → ticket nuevo (si no existe) → observación → guardar.", "Genesys: Disponible → En llamada → ACW (registrar ticket) → Disponible. Cada estado tiene un impacto en las métricas.", "Observación efectiva: motivo + acción + compromiso (qué+cuándo) + código categoría. Sin jerga interna.", "El campo 'Descripción corta' puede ser visible para el cliente en el portal — cuidar el lenguaje.", "ACW es el tiempo exacto para registrar el ticket — no para otras tareas. Cuidar el AHT del equipo."];
+var ERRORS=["Crear un ticket nuevo sin revisar el historial — puede haber un ticket activo por el mismo problema.", "Quedarse en estado ACW más tiempo del necesario para hacer otras tareas — afecta el AHT del equipo.", "Buscar al cliente por teléfono en vez de RUT o N° de servicio — puede traer el perfil incorrecto.", "Escribir observaciones con jerga interna o siglas que el cliente no entendería si las lee.", "Olvidar confirmar el número de ticket al cliente al cierre — es su respaldo para hacer seguimiento."];
+
+function buildCards(){{
+  var g=document.getElementById('cardGrid');if(!g)return;
+  CARDS.forEach(function(c){{
+    var d=document.createElement('div');d.className='rev-card '+c.color;
+    d.innerHTML='<h4><span class="card-icon">'+c.icon+'</span>'+c.name+'</h4><div class="rev-desc">'+c.desc+'</div><span class="rev-hint">👆 Toca para explorar</span>';
+    d.onclick=function(){{
+      if(this.classList.contains('revealed'))return;
+      this.classList.add('revealed');this.querySelector('.rev-hint').textContent='✓ Explorado';
+      state.cardRevealed=(state.cardRevealed||0)+1;
+      var cnt=document.getElementById('cardCnt');
+      if(cnt)cnt.textContent=state.cardRevealed+' de '+CARDS.length+' conceptos explorados';
+    }};
+    g.appendChild(d);
+  }});
+}}
+function buildSynth(){{
+  var b=document.getElementById('synthBody');if(!b)return;
+  b.innerHTML=SYNTH.map(function(s){{return '<div class="synth-item"><span class="si-icon">✓</span><p>'+s+'</p></div>';}}).join('');
+}}
+function buildErrors(){{
+  var b=document.getElementById('errorBody');if(!b)return;
+  b.innerHTML=ERRORS.map(function(e){{return '<div class="error-item"><span class="ei-icon">✗</span><p>'+e+'</p></div>';}}).join('');
+}}
+function decidir(n,opt){{
+  if(state.decisions[n])return;state.decisions[n]=opt;
+  var dec=DEC[n];var btns=document.querySelectorAll('#d'+n+' .opt');var letters=['A','B','C'];
+  btns.forEach(function(b,i){{if(letters[i]===dec.correct)b.classList.add('correct');else if(letters[i]===opt&&opt!==dec.correct)b.classList.add('wrong');else b.classList.add('disabled');}});
+  var res=dec[opt];var fb=document.getElementById('fb'+n);
+  fb.className='feedback show '+(res.ok?'ok':'ko');
+  fb.innerHTML=(res.ok?'<strong>✓ Correcto</strong> — ':'<strong>✗ Incorrecto</strong> — ')+res.msg;
+}}
+function showQuestion(){{
+  var q=QUIZ[state.quizCurrent];
+  document.getElementById('qCounter').textContent='Pregunta '+(state.quizCurrent+1)+' de '+QUIZ.length;
+  document.getElementById('qFb').className='feedback';document.getElementById('qNext').style.display='none';state.quizAnswered=false;
+  document.getElementById('qText').innerHTML='<p style="font-size:13.5px;line-height:1.7;margin-bottom:14px;font-weight:600;color:#1E293B">'+q.q+'</p>';
+  var opts=document.getElementById('qOpts');opts.innerHTML='';
+  q.opts.forEach(function(o,i){{var b=document.createElement('button');b.className='opt';b.innerHTML=o;b.onclick=(function(idx){{return function(){{answerQ(idx);}};}})(i);opts.appendChild(b);}});
+}}
+function answerQ(idx){{
+  if(state.quizAnswered)return;state.quizAnswered=true;
+  var q=QUIZ[state.quizCurrent];
+  document.querySelectorAll('#qOpts .opt').forEach(function(b,i){{if(i===q.ans)b.classList.add('correct');else if(i===idx&&idx!==q.ans)b.classList.add('wrong');else b.classList.add('disabled');}});
+  var ok=idx===q.ans;if(ok)state.quizScore++;
+  var fb=document.getElementById('qFb');fb.className='feedback show '+(ok?'ok':'ko');
+  fb.innerHTML='<strong>'+(ok?'✓ Correcto':'✗ Incorrecto')+'</strong> — '+q.exp;
+  document.getElementById('qNext').style.display='inline-block';
+  try{{SCORM.set('cmi.interactions.'+state.quizCurrent+'.id','q'+state.quizCurrent);SCORM.set('cmi.interactions.'+state.quizCurrent+'.result',ok?'correct':'wrong');}}catch(e){{}}
+}}
+function nextQ(){{state.quizCurrent++;if(state.quizCurrent<QUIZ.length)showQuestion();else NAV(1);}}
+function showResults(){{
+  var pct=Math.round(state.quizScore/QUIZ.length*100);
+  document.getElementById('resultScore').textContent=state.quizScore+'/'+QUIZ.length;
+  document.getElementById('resultPct').textContent=pct+'% correcto';
+  var sd=document.getElementById('scoreDisplay');if(sd)sd.textContent='Puntuación: '+pct+'%';
+  setTimeout(function(){{document.getElementById('resultBar').style.width=pct+'%';}},300);
+  var badges={{100:'🏆 Dominio total — ¡puntaje perfecto!',75:'👍 Buen desempeño — aprobado',0:'🔁 Bajo el umbral — revisa y reintenta'}};
+  var key=pct===100?100:pct>=75?75:0;
+  document.getElementById('resultBadge').innerHTML=badges[key];
+  if(pct<100&&document.getElementById('reviewBox')){{
+    document.getElementById('reviewBox').innerHTML='<div class="review-box"><div class="review-title">📌 Conceptos para repasar</div><ul class="review-list">'+ERRORS.map(function(e){{return '<li>'+e+'</li>';}}).join('')+'</ul></div>';
+  }}
+  SCORM.setComplete(pct);
+}}
+function restartQuiz(){{
+  state={{cur:0,total:TOTAL_SC,quizScore:0,quizCurrent:0,quizAnswered:false,qInitDone:false,decisions:{{1:null,2:null,3:null}}}};
+  document.querySelectorAll('.scene').forEach(function(s){{s.classList.remove('active');}});
+  document.getElementById('sc0').classList.add('active');CUR=0;
+  document.querySelectorAll('.opt').forEach(function(b){{b.className='opt';}});
+  document.querySelectorAll('.feedback').forEach(function(f){{f.className='feedback';f.innerHTML='';}});
+  document.querySelectorAll('.rev-card').forEach(function(c){{c.classList.remove('revealed');var h=c.querySelector('.rev-hint');if(h)h.textContent='👆 Toca para explorar';}});
+  document.getElementById('reviewBox').innerHTML='';
+  document.getElementById('resultBar').style.width='0%';
+  var sd=document.getElementById('scoreDisplay');if(sd)sd.textContent='Puntuación: 0%';
+  buildCards();buildSynth();buildErrors();UPD();
+}}
+
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL_SC=9;
+  UPD();
+  if(typeof buildCards==='function')buildCards();
+  if(typeof buildSynth==='function')buildSynth();
+  if(typeof buildErrors==='function')buildErrors();
+  
+  try{SCORM.set('cmi.core.lesson_status','incomplete');}catch(e){}
+});
+</script>
+</body>
+</html>

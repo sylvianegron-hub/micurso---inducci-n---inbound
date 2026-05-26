@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Microcurso Inbound · Día 10 — Evaluación Final y cierre del programa</title>
+<style>
+/* ═══ INBOUND ENHANCEMENTS — diseño visual mejorado ═══ */
+.scene{display:none!important}.scene.active{display:block!important}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#F0F4F8;color:#1E293B;font-size:15px;line-height:1.6;overflow-y:scroll}
+.mc-wrap{max-width:780px;margin:0 auto;padding:14px 14px 110px}
+
+/* Header mejorado */
+.mc-header{background:linear-gradient(135deg,#1B3A6B 0%,#2563EB 100%);border-radius:14px;padding:18px 22px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 4px 16px rgba(27,58,107,.25)}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-icon{width:48px;height:48px;background:rgba(255,255,255,.18);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.mc-header h1{color:#fff;font-size:17px;font-weight:700;line-height:1.3;margin-bottom:3px}
+.mc-header p{color:#BFDBFE;font-size:11px}
+.score-display{background:rgba(255,255,255,.15);color:#E0F2FE;font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;white-space:nowrap;border:1px solid rgba(255,255,255,.2)}
+
+/* Progress */
+.progress-wrap{background:#E2E8F0;border-radius:20px;height:7px;margin-bottom:8px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.08)}
+.progress-bar{height:7px;background:linear-gradient(90deg,#0D9488,#2563EB);border-radius:20px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.scene-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.scene-info span{font-size:11px;color:#64748B}
+.bloom-badge{background:linear-gradient(135deg,#1B3A6B,#2563EB);color:#fff;font-size:10px;font-weight:700;padding:3px 12px;border-radius:20px;box-shadow:0 2px 6px rgba(27,58,107,.3)}
+
+/* Slides */
+.slide{background:#fff;border-radius:14px;border:0.5px solid #E2E8F0;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.slide-hdr{padding:16px 20px;border-bottom:0.5px solid rgba(255,255,255,.3)}
+.hdr-blue{background:linear-gradient(135deg,#1B3A6B,#2563EB)}.hdr-blue .slide-tag,.hdr-blue h2{color:#fff}
+.hdr-teal{background:linear-gradient(135deg,#0D9488,#0F766E)}.hdr-teal .slide-tag,.hdr-teal h2{color:#fff}
+.hdr-amber{background:linear-gradient(135deg,#D97706,#B45309)}.hdr-amber .slide-tag,.hdr-amber h2{color:#fff}
+.hdr-purp{background:linear-gradient(135deg,#7C3AED,#6D28D9)}.hdr-purp .slide-tag,.hdr-purp h2{color:#fff}
+.hdr-red{background:linear-gradient(135deg,#DC2626,#B91C1C)}.hdr-red .slide-tag,.hdr-red h2{color:#fff}
+.hdr-green{background:linear-gradient(135deg,#16A34A,#15803D)}.hdr-green .slide-tag,.hdr-green h2{color:#fff}
+.slide-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;opacity:.85}
+.slide-hdr h2{font-size:16px;font-weight:700;line-height:1.3}
+.slide-body{padding:18px 20px}
+
+/* Tarjetas reveal mejoradas */
+.reveal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.rev-card{border-radius:12px;padding:14px 15px;cursor:pointer;border:2px solid transparent;transition:all .2s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.rev-card::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,.4),rgba(255,255,255,0));pointer-events:none}
+.rev-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.12)}
+.rev-card:active{transform:scale(.97)}
+.rev-card h4{font-size:13px;font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.rev-card .card-icon{font-size:18px;flex-shrink:0}
+.rev-desc{font-size:11.5px;line-height:1.55;display:none;margin:6px 0 4px}
+.rev-hint{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;display:inline-block;margin-top:5px;transition:all .2s}
+.rev-card.revealed .rev-desc{display:block}
+.rev-card.revealed .rev-hint{opacity:.7}
+.rev-card.blue{background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border-color:#BFDBFE}
+.rev-card.blue h4{color:#1D4ED8}.rev-card.blue .rev-desc{color:#1E40AF}.rev-card.blue .rev-hint{background:#BFDBFE;color:#1E40AF}
+.rev-card.teal{background:linear-gradient(135deg,#F0FDFA,#CCFBF1);border-color:#99F6E4}
+.rev-card.teal h4{color:#0F766E}.rev-card.teal .rev-desc{color:#115E59}.rev-card.teal .rev-hint{background:#99F6E4;color:#0F766E}
+.rev-card.purp{background:linear-gradient(135deg,#F5F3FF,#EDE9FE);border-color:#DDD6FE}
+.rev-card.purp h4{color:#6D28D9}.rev-card.purp .rev-desc{color:#5B21B6}.rev-card.purp .rev-hint{background:#DDD6FE;color:#5B21B6}
+.rev-card.amber{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border-color:#FDE68A}
+.rev-card.amber h4{color:#92400E}.rev-card.amber .rev-desc{color:#78350F}.rev-card.amber .rev-hint{background:#FDE68A;color:#78350F}
+.rev-card.red{background:linear-gradient(135deg,#FFF5F5,#FEE2E2);border-color:#FECACA}
+.rev-card.red h4{color:#991B1B}.rev-card.red .rev-desc{color:#7F1D1D}.rev-card.red .rev-hint{background:#FECACA;color:#7F1D1D}
+.rev-card.green{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-color:#BBF7D0}
+.rev-card.green h4{color:#166534}.rev-card.green .rev-desc{color:#14532D}.rev-card.green .rev-hint{background:#BBF7D0;color:#166534}
+.rev-card.gray{background:linear-gradient(135deg,#F8FAFC,#F1F5F9);border-color:#E2E8F0}
+.rev-card.gray h4{color:#334155}.rev-card.gray .rev-desc{color:#475569}.rev-card.gray .rev-hint{background:#E2E8F0;color:#334155}
+
+/* Summary box */
+.concept-summary{background:linear-gradient(135deg,#EFF6FF,#F0FDFA);border-left:4px solid #2563EB;border-radius:0 10px 10px 0;padding:12px 16px;margin-bottom:12px;font-size:13px;color:#1E293B;line-height:1.65}
+.concept-summary strong{color:#1B3A6B}
+.concept-counter{font-size:11px;color:#64748B;text-align:center;margin-top:10px;font-weight:500}
+
+/* Options */
+.opts{display:flex;flex-direction:column;gap:9px;margin:12px 0}
+.opt{border-radius:10px;padding:13px 16px;cursor:pointer;border:1.5px solid #E2E8F0;background:#fff;font-size:13px;text-align:left;color:#1E293B;transition:all .15s;line-height:1.5;width:100%;font-family:'Segoe UI',Arial,sans-serif;position:relative;overflow:hidden}
+.opt::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#E2E8F0;transition:background .15s}
+.opt:hover{border-color:#2563EB;background:#EFF6FF;transform:translateX(3px)}.opt:hover::before{background:#2563EB}
+.opt.correct{border-color:#16A34A;background:#F0FDF4;color:#14532D;pointer-events:none;font-weight:600}.opt.correct::before{background:#16A34A}
+.opt.wrong{border-color:#DC2626;background:#FFF5F5;color:#7F1D1D;pointer-events:none}.opt.wrong::before{background:#DC2626}
+.opt.disabled{opacity:.45;pointer-events:none}
+
+/* Feedback */
+.feedback{border-radius:10px;padding:12px 16px;font-size:12.5px;line-height:1.65;display:none;margin-top:8px}
+.feedback.show{display:block;animation:fadeIn .3s ease}
+.feedback.ok{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);color:#14532D;border:1px solid #BBF7D0}
+.feedback.ko{background:linear-gradient(135deg,#FFF5F5,#FEE2E2);color:#7F1D1D;border:1px solid #FECACA}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Case boxes */
+.case-box{border-radius:12px;padding:15px 18px;margin-bottom:14px;border:1.5px solid transparent}
+.case-box.amber{background:#FFFBEB;border-color:#FDE68A}.case-box.red{background:#FFF5F5;border-color:#FECACA}
+.case-box.teal{background:#F0FDFA;border-color:#99F6E4}.case-box.blue{background:#EFF6FF;border-color:#BFDBFE}
+.case-box.purp{background:#F5F3FF;border-color:#DDD6FE}
+.case-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.case-box.amber .case-label{color:#92400E}.case-box.red .case-label{color:#991B1B}
+.case-box.teal .case-label{color:#0F766E}.case-box.blue .case-label{color:#1D4ED8}
+.case-box.purp .case-label{color:#6D28D9}
+.case-box p{font-size:13px;line-height:1.65;color:#1E293B}
+
+/* Mini cards */
+.card-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.mini-card{border-radius:12px;padding:14px 12px;text-align:center;transition:transform .2s}
+.mini-card:hover{transform:translateY(-2px)}
+.mini-card.blue{background:linear-gradient(135deg,#EFF6FF,#DBEAFE)}.mini-card.blue h4{color:#1D4ED8}.mini-card.blue p{color:#3B82F6}
+.mini-card.teal{background:linear-gradient(135deg,#F0FDFA,#CCFBF1)}.mini-card.teal h4{color:#0F766E}.mini-card.teal p{color:#14B8A6}
+.mini-card.amber{background:linear-gradient(135deg,#FFFBEB,#FEF3C7)}.mini-card.amber h4{color:#92400E}.mini-card.amber p{color:#D97706}
+.mini-card.purp{background:linear-gradient(135deg,#F5F3FF,#EDE9FE)}.mini-card.purp h4{color:#6D28D9}.mini-card.purp p{color:#8B5CF6}
+.mc-icon{font-size:26px;margin-bottom:8px}
+.mini-card h4{font-size:12px;font-weight:700;margin-bottom:3px}
+.mini-card p{font-size:10.5px}
+
+/* Info / tip boxes */
+.intro-text{font-size:13.5px;line-height:1.75;color:#1E293B;margin-bottom:14px}
+.hint-text{font-size:12px;color:#64748B;margin-bottom:8px;font-style:italic}
+.info-box{background:linear-gradient(135deg,#F8FAFC,#F1F5F9);border-radius:10px;padding:11px 15px;margin-top:14px;font-size:12.5px;color:#475569;border:1px solid #E2E8F0;display:flex;align-items:center;gap:8px}
+.tip-box{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border-radius:10px;padding:11px 15px;margin-top:12px;font-size:12px;color:#78350F;border:1px solid #FDE68A}
+.alert-box{background:linear-gradient(135deg,#FFF5F5,#FEE2E2);border-radius:10px;padding:11px 15px;margin-top:12px;font-size:12px;color:#7F1D1D;border:1px solid #FECACA;display:flex;align-items:flex-start;gap:8px}
+
+/* Synth / error items */
+.synth-item{display:flex;gap:10px;align-items:flex-start;padding:10px 13px;background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-radius:9px;margin-bottom:8px;border:1px solid #BBF7D0}
+.synth-item .si-icon{color:#16A34A;font-size:16px;flex-shrink:0;margin-top:1px}
+.synth-item p{font-size:12.5px;color:#14532D;line-height:1.55}
+.error-item{display:flex;gap:10px;align-items:flex-start;padding:10px 13px;background:linear-gradient(135deg,#FFF5F5,#FEE2E2);border-radius:9px;margin-bottom:8px;border:1px solid #FECACA}
+.error-item .ei-icon{color:#DC2626;font-size:16px;flex-shrink:0;margin-top:1px}
+.error-item p{font-size:12.5px;color:#7F1D1D;line-height:1.55}
+
+/* Quiz */
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.btn-primary{background:linear-gradient(135deg,#1B3A6B,#2563EB);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Segoe UI',Arial,sans-serif;box-shadow:0 3px 10px rgba(27,58,107,.3);transition:all .15s}
+.btn-primary:hover{background:linear-gradient(135deg,#1e4284,#2d6ef7);transform:translateY(-1px)}
+.btn-primary:active{transform:scale(.97)}
+.btn-secondary{background:#F1F5F9;color:#1E293B;border:1px solid #CBD5E1;border-radius:10px;padding:11px 22px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Segoe UI',Arial,sans-serif;transition:all .15s}
+.btn-secondary:hover{background:#E2E8F0}
+
+/* Result card */
+.result-card{background:linear-gradient(135deg,#1B3A6B 0%,#2563EB 100%);border-radius:16px;padding:28px;text-align:center;color:#fff;margin-bottom:16px;box-shadow:0 8px 24px rgba(27,58,107,.35)}
+.result-title{font-size:13px;color:#BFDBFE;margin-bottom:8px;font-weight:500}
+.result-score{font-size:58px;font-weight:800;line-height:1;margin-bottom:8px}
+.result-pct{font-size:15px;color:#BFDBFE;margin-bottom:18px}
+.result-bar-wrap{background:rgba(255,255,255,.2);border-radius:20px;height:10px;overflow:hidden;margin-bottom:18px}
+.result-bar{height:10px;background:linear-gradient(90deg,#34D399,#10B981);border-radius:20px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.result-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);border-radius:20px;padding:8px 18px;font-size:12px;color:#E0F2FE;border:1px solid rgba(255,255,255,.2)}
+.result-actions{text-align:center;margin-top:16px}
+.review-box{background:#fff;border-radius:12px;border:1px solid #E2E8F0;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.review-title{font-size:12px;font-weight:700;color:#1E293B;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.review-list{font-size:12px;color:#64748B;line-height:1.85;padding-left:16px}
+
+/* SAP */
+.sap-lbl{font-size:11.5px;color:#64748B;display:block;margin-bottom:4px;font-weight:500}
+.sap-input{width:100%;border:1.5px solid #E2E8F0;border-radius:8px;padding:8px 12px;font-size:13px;font-family:monospace;background:#F8FAFC;color:#1E293B;transition:border-color .15s}
+.sap-input:focus{outline:none;border-color:#2563EB;background:#EFF6FF}
+.formula-box{background:linear-gradient(135deg,#EFF6FF,#E0F2FE);border-radius:12px;padding:16px 18px;border:1px solid #BFDBFE;margin-bottom:14px}
+.formula-title{font-size:12px;font-weight:700;color:#1D4ED8;margin-bottom:10px}
+.formula{font-size:14px;font-weight:700;color:#1D4ED8;text-align:center;padding:10px;background:rgba(255,255,255,.7);border-radius:8px;margin:6px 0;font-family:monospace}
+.fex{border-radius:9px;padding:11px 13px}
+.fex.blue{background:rgba(255,255,255,.75);border:1px solid #BFDBFE}
+.fex.teal{background:rgba(255,255,255,.75);border:1px solid #99F6E4}
+.fex-row{display:flex;justify-content:space-between;font-size:11.5px;color:#64748B;margin-bottom:4px}
+.fex-title{font-size:10.5px;font-weight:700;margin-bottom:7px;color:#1D4ED8}
+.fex-total{font-size:12px;font-weight:700;color:#fff;border-radius:6px;padding:6px 10px;text-align:center;margin-top:7px}
+.formula-examples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.calc-total{background:linear-gradient(135deg,#1B3A6B,#2563EB);color:#fff;border-radius:9px;padding:9px 15px;font-size:14px;font-weight:800;text-align:center;margin-top:8px}
+
+/* Nav fixed */
+.nav-fixed{position:fixed;bottom:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#1B3A6B,#2563EB);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 -4px 20px rgba(27,58,107,.4)}
+.nav-info{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.nav-counter{color:#BFDBFE;font-size:11px;font-weight:600}
+.nav-dots-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .35s cubic-bezier(.4,0,.2,1)}
+.nav-dot.done{background:#34D399}.nav-dot.cur{background:#fff;width:22px;border-radius:4px}
+.btn-nav-big{background:#fff;color:#1B3A6B;border:none;border-radius:11px;padding:12px 20px;font-size:15px;font-weight:800;cursor:pointer;min-width:110px;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 3px 10px rgba(0,0,0,.2);touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:rgba(27,58,107,.2);transition:transform .1s,background .15s,box-shadow .15s;font-family:'Segoe UI',Arial,sans-serif}
+.btn-nav-big:hover{background:#EFF6FF;box-shadow:0 5px 14px rgba(0,0,0,.2)}
+.btn-nav-big:active{transform:scale(.94)}
+.btn-nav-big:disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
+.btn-nav-big.next-btn{background:linear-gradient(135deg,#0D9488,#0F766E);color:#fff}
+.btn-nav-big.next-btn:hover{background:linear-gradient(135deg,#14B8A6,#0D9488)}
+
+/* Result banner */
+#resultBanner{display:none;border-radius:12px;padding:22px;margin:14px 0;text-align:center;font-size:14px;line-height:1.9}
+
+/* Flow steps */
+.flow-step{border-radius:11px;padding:13px 16px;margin-bottom:9px;border:2px solid transparent;background:#F8FAFC;transition:all .25s}
+.flow-step.active-step{background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border-color:#BFDBFE;box-shadow:0 4px 12px rgba(37,99,235,.15)}
+.flow-step.done-step{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-color:#BBF7D0}
+.flow-step h4{font-size:13px;font-weight:700;margin-bottom:5px}
+.flow-step.active-step h4{color:#1D4ED8}.flow-step.done-step h4{color:#15803D}
+
+/* Process timeline */
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,#2563EB,#0D9488)}
+.tl-item{position:relative;margin-bottom:14px}
+.tl-dot{position:absolute;left:-24px;top:4px;width:14px;height:14px;border-radius:50%;background:#2563EB;border:2px solid #fff;box-shadow:0 0 0 2px #2563EB}
+.tl-dot.teal{background:#0D9488;box-shadow:0 0 0 2px #0D9488}
+.tl-dot.amber{background:#D97706;box-shadow:0 0 0 2px #D97706}
+.tl-dot.red{background:#DC2626;box-shadow:0 0 0 2px #DC2626}
+.tl-content{background:#fff;border-radius:10px;padding:10px 14px;border:1px solid #E2E8F0;font-size:12.5px;color:#1E293B;line-height:1.55}
+.tl-title{font-weight:700;font-size:12px;margin-bottom:3px;color:#1B3A6B}
+</style>
+</head>
+<body>
+<div id="resultBanner"></div>
+<div class="mc-wrap">
+<header class="mc-header">
+  <div class="header-left">
+    <div class="header-icon">🏆</div>
+    <div>
+      <h1>Evaluación Final y cierre del programa</h1>
+      <p>Inbound · Día 10 · Bloom: Evaluar · 6–8 min</p>
+    </div>
+  </div>
+  <div class="score-display" id="scoreDisplay">Puntuación: 0%</div>
+</header>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+<div class="scene-info"><span id="sceneLabel">Módulo 1 de 9</span><span id="bloomLabel" class="bloom-badge">Bloom: Evaluar</span></div>
+<section class="scene active" id="sc0">
+<div class="slide"><div class="slide-hdr hdr-blue"><span class="slide-tag">🏆 Cierre del Programa — Día 10</span><h2>Integración total de los 10 días</h2></div>
+<div class="slide-body">
+<p class="intro-text">Hoy es el cierre del programa. Integrarás <strong>todos los contenidos de las 2 semanas</strong> en situaciones complejas que combinan facturación, escalamiento, herramientas y manejo emocional — todo al mismo tiempo.</p>
+<div class="card-grid-3">
+  <div class="mini-card blue"><div class="mc-icon">📚</div><h4>6 conceptos clave</h4><p>Repaso integrador</p></div>
+  <div class="mini-card red"><div class="mc-icon">🚨</div><h4>3 casos complejos</h4><p>Situaciones integradas</p></div>
+  <div class="mini-card purp"><div class="mc-icon">🏆</div><h4>Evaluación Final</h4><p>4 preguntas integradoras</p></div>
+</div>
+<div class="alert-box"><span>⭐</span><span><strong>Evaluación Final:</strong> 40% de la nota total del programa. Umbral 75%. Sin recuperación — el resultado define el nivel de acompañamiento post-inducción que recibirás.</span></div>
+</div></div></section><section class="scene" id="sc1">
+<div class="slide"><div class="slide-hdr hdr-blue"><span class="slide-tag">📚 Repaso integrador — 6 conceptos esenciales</span><h2>Todo el programa en tarjetas — toca cada una</h2></div>
+<div class="slide-body">
+<div class="concept-summary">Hoy es el cierre del programa. Integrarás <strong>todos los contenidos de las 2 semanas</strong> en situaciones complejas que combinan facturación, escalamiento, herramientas y manejo emocional — todo al mismo tiempo.</div>
+<p class="hint-text">Estas 6 tarjetas resumen los conceptos más evaluados. Revisarlas antes del quiz te ayudará a activar lo que ya sabes.</p>
+<div class="reveal-grid" id="cardGrid"></div>
+<div class="concept-counter" id="cardCnt">0 de 6 conceptos revisados</div>
+</div></div></section><section class="scene" id="sc2">
+<div class="slide"><div class="slide-hdr hdr-teal"><span class="slide-tag">🗺️ Mapa del programa — 10 días en una vista</span><h2>Semana 1 y Semana 2 — lo que dominaste</h2></div>
+<div class="slide-body">
+<div class="concept-summary">En 10 días pasaste de <strong>Recordar</strong> (Día 1) a <strong>Evaluar</strong> (Día 10) — el nivel más alto de la Taxonomía de Bloom. Eso significa que puedes analizar situaciones nuevas y tomar decisiones correctas autónomamente.</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0">
+  <div style="background:linear-gradient(135deg,#F0FDFA,#CCFBF1);border-radius:11px;padding:14px;border:1.5px solid #99F6E4">
+    <div style="font-size:12px;font-weight:800;color:#0F766E;margin-bottom:10px">✅ SEMANA 1 — Eje Técnico</div>
+    <div style="font-size:11.5px;color:#115E59;line-height:1.85">
+      D2 · Protocolos y escucha activa<br>
+      D3 · C4C y Genesys<br>
+      D4 · ES32, FPL9 y Centrality<br>
+      D5 · ED, PMGD y escalamiento<br>
+      ⭐ Evaluación Semana 1 (25%)
+    </div>
+  </div>
+  <div style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border-radius:11px;padding:14px;border:1.5px solid #BFDBFE">
+    <div style="font-size:12px;font-weight:800;color:#1D4ED8;margin-bottom:10px">✅ SEMANA 2 — Eje Comercial</div>
+    <div style="font-size:11.5px;color:#1E40AF;line-height:1.85">
+      D6 · Facturación y NC manuales<br>
+      D7 · Plazos comerciales<br>
+      D8 · Netbilling y PMGD<br>
+      D9 · Ley Karin, medidores y Dummy<br>
+      ⭐ Evaluación Final hoy (40%)
+    </div>
+  </div>
+</div>
+<div style="background:linear-gradient(135deg,#1B3A6B,#2563EB);border-radius:11px;padding:14px;text-align:center;color:#fff">
+  <div style="font-size:13px;font-weight:700;margin-bottom:4px">🏆 Nota total del programa</div>
+  <div style="font-size:11px;color:#BFDBFE">Quiz diario 15% · Eval S1 25% · Casos comerciales 20% · Eval Final 40% · Umbral global 75%</div>
+</div>
+</div></div></section><section class="scene" id="sc3"><div class="slide">
+<div class="slide-hdr hdr-red"><span class="slide-tag">🎯 Caso integrador 1 de 3 — Alta complejidad</span><h2>Caso integrador — llamada básica que escala a ED</h2></div>
+<div class="slide-body"><div class="case-box red"><div class="case-label">⚡ Situación real compleja</div><p>Doña Carmen llama porque 'no le llega la boleta hace 2 meses'. Mientras revisas en FPL9, menciona de pasada que 'por eso tendrán la luz cortada a mi esposo que está con máquina de diálisis'. Verificas ES32: hay aviso de corte por morosidad activo.</p></div>
+<p class="hint-text">Esta situación combina múltiples competencias del programa.</p>
+<div class="opts" id="d1"><button class="opt" onclick="decidir(1,'A')">A) Pausar la consulta de boleta inmediatamente → activar protocolo ED: escalar a Operaciones + Jefatura simultáneo → comunicar a Doña Carmen: 'Voy a escalar ahora mismo a nuestro equipo de urgencias por la condición de su esposo' → registrar en C4C → retomar la consulta de la boleta solo después de resolver la ED.</button><button class="opt" onclick="decidir(1,'B')">B) Terminar de revisar la boleta primero porque para eso llamó Doña Carmen, y luego ver lo del esposo.</button><button class="opt" onclick="decidir(1,'C')">C) Decirle que llame a un número de emergencias médicas porque eso no es competencia del contact center eléctrico.</button></div><div class="feedback" id="fb1"></div>
+</div></div></section><section class="scene" id="sc4">
+<div class="slide"><div class="slide-hdr hdr-purp"><span class="slide-tag">⚠️ Errores más frecuentes del programa</span><h2>Lo que más cuesta — y cómo evitarlo</h2></div>
+<div class="slide-body">
+<div class="concept-summary">Antes del quiz final, repasa los <strong>5 errores más frecuentes</strong> identificados en los 9 días del programa. Conocerlos es la diferencia entre un 75% y un 100%.</div>
+<div style="margin:12px 0;display:flex;flex-direction:column;gap:9px">
+  <div class="error-item"><span class="ei-icon">✗</span><p><strong>Error 1:</strong> Terminar la gestión en curso antes de activar el protocolo ED. El riesgo vital <em>siempre</em> interrumpe cualquier otra llamada — sin excepciones.</p></div>
+  <div class="error-item"><span class="ei-icon">✗</span><p><strong>Error 2:</strong> Calcular la NC sobre el total con IVA en lugar del neto. NC neta = cobrado neto − correcto neto. Luego × 1,19.</p></div>
+  <div class="error-item"><span class="ei-icon">✗</span><p><strong>Error 3:</strong> Prometer a un prosumidor Netbilling que los excedentes aparecerán en la boleta actual. Aparecen en la <em>siguiente</em>.</p></div>
+  <div class="error-item"><span class="ei-icon">✗</span><p><strong>Error 4:</strong> Crear ticket Dummy cuando la dirección existe en el sistema. Dummy solo sin georreferenciación disponible.</p></div>
+  <div class="error-item"><span class="ei-icon">✗</span><p><strong>Error 5:</strong> Aguantar insultos sistemáticos sin advertir al cliente y registrar el incidente. La Ley Karin te protege — úsala correctamente.</p></div>
+</div>
+<div class="tip-box">💡 Si recuerdas estos 5 errores y sabes por qué son errores, tienes el 80% de la evaluación final.</div>
+</div></div></section><section class="scene" id="sc4"><div class="slide">
+<div class="slide-hdr hdr-red"><span class="slide-tag">🎯 Caso integrador 2 de 3 — Alta complejidad</span><h2>Caso integrador — Netbilling + NC + plazo</h2></div>
+<div class="slide-body"><div class="case-box purp"><div class="case-label">⚡ Situación real compleja</div><p>Don Sergio (prosumidor Netbilling BT1) llama: (1) lleva 2 meses sin ver créditos de sus excedentes, (2) su boleta de enero tiene precio incorrecto ($92 vs. $82/kWh), (3) pide que 'lo resuelvan hoy'. Verificas: medidor tipo B activo en ES32, FPL9 confirma el error de precio. Calculas NC: 310 kWh × $10 = $3.100 neto → $3.689 total.</p></div>
+<p class="hint-text">Esta situación combina múltiples competencias del programa.</p>
+<div class="opts" id="d2"><button class="opt" onclick="decidir(2,'A')">A) Resolver todo de inmediato: emitir NC + investigar excedentes + prometer que mañana tiene los créditos.</button><button class="opt" onclick="decidir(2,'B')">B) Priorizar y secuenciar: (1) Confirmar el error de precio en FPL9 → emitir NC $3.689 (dentro de tu límite) → explicar que los excedentes aparecen en la SIGUIENTE boleta, no hay error técnico visible → verificar en ES32 si el medidor bidireccional está activo (está activo). Explicar que todo está correcto con los excedentes y que el crédito vendrá en la próxima boleta.</button><button class="opt" onclick="decidir(2,'C')">C) Decirle que tiene 3 problemas distintos y que debe llamar 3 veces para cada uno.</button></div><div class="feedback" id="fb2"></div>
+</div></div></section><section class="scene" id="sc5"><div class="slide">
+<div class="slide-hdr hdr-red"><span class="slide-tag">🎯 Caso integrador 3 de 3 — Alta complejidad</span><h2>Caso integrador — PMGD + plazo vencido + Ley Karin</h2></div>
+<div class="slide-body"><div class="case-box teal"><div class="case-label">⚡ Situación real compleja</div><p>Don Fernando, cliente con código PMGD activo, llama con 28 horas sin suministro (plazo normativo vencido). Está muy alterado e insulta directamente al ejecutivo/a. Dice 'son todos unos incompetentes y ojalá los echen a todos'.</p></div>
+<p class="hint-text">Esta situación combina múltiples competencias del programa.</p>
+<div class="opts" id="d3"><button class="opt" onclick="decidir(3,'A')">A) Colgar inmediatamente porque los insultos están protegidos por Ley Karin.</button><button class="opt" onclick="decidir(3,'B')">B) Continuar aguantando los insultos porque el cliente tiene razón — el plazo está vencido.</button><button class="opt" onclick="decidir(3,'C')">C) Advertir con calma: 'Don Fernando, entiendo su frustración — 28 horas sin luz es inaceptable. Voy a gestionar esto con urgencia ahora mismo. Sin embargo, si los insultos continúan me veré obligado a finalizar la llamada. ¿Me permite trabajar en solucionar esto?' → verificar código PMGD en ES32 → escalar a Técnica + Jefatura inmediatamente → documentar el incumplimiento de plazo para el proceso de compensación → registrar en C4C el incidente y el escalamiento.</button></div><div class="feedback" id="fb3"></div>
+</div></div></section><section class="scene" id="sc7">
+<div class="slide"><div class="slide-hdr hdr-amber"><span class="slide-tag">✏️ Evaluación Final — 4 preguntas integradoras</span><h2>Demuestra dominio completo del programa</h2></div>
+<div class="slide-body">
+  <p class="hint-text" style="font-size:13px;font-weight:600;color:#1B3A6B">Cada pregunta combina contenidos de distintos días — así funciona el cargo en la realidad.</p>
+  <div id="qText"></div><div id="qOpts" class="opts"></div><div id="qFb" class="feedback"></div>
+  <div class="quiz-nav"><span id="qCounter" style="font-size:12px;font-weight:600;color:#64748B">Pregunta 1 de 4</span>
+  <button class="btn-primary" id="qNext" onclick="nextQ()" style="display:none">Siguiente &#9654;</button></div>
+</div></div></section>
+<section class="scene" id="sc8">
+<div class="result-card"><div class="result-title">🏆 Programa Inducción Inbound — Completado</div>
+<div class="result-score" id="resultScore">0/4</div><div class="result-pct" id="resultPct">0%</div>
+<div class="result-bar-wrap"><div class="result-bar" id="resultBar" style="width:0%"></div></div>
+<div class="result-badge" id="resultBadge">Calculando resultado...</div></div>
+<div style="background:linear-gradient(135deg,#F0FDFA,#CCFBF1);border-radius:12px;padding:18px;margin-bottom:14px;border:1px solid #99F6E4">
+  <div style="font-size:14px;font-weight:700;color:#0F766E;margin-bottom:8px">🎓 ¿Qué sigue después del programa?</div>
+  <div style="font-size:12px;color:#115E59;line-height:1.8">
+    <strong>Semanas 1–8 en cargo:</strong> tu tutor asignado está disponible, el LMS publica un módulo nuevo cada semana y tienes el estado 'ayuda a compañero' en Genesys para consultas en tiempo real.<br><br>
+    <strong>Criterios para graduarte del acompañamiento:</strong> 3 turnos consecutivos autónomos sin errores de protocolo + Nivel 3 en LMS por 3 semanas seguidas + 2 escalamientos correctos verificados por tu tutor.
+  </div>
+</div>
+<div id="reviewBox"></div>
+<div class="result-actions"><button class="btn-secondary" onclick="restartQuiz()">&#8635; Reiniciar microcurso de repaso</button></div>
+</section>
+</div>
+<div class="nav-fixed">
+  <button class="btn-nav-big" id="btnPrev" onclick="NAV(-1)" disabled>&#9664; Anterior</button>
+  <div class="nav-info">
+    <span class="nav-counter" id="navCnt">1 / 9</span>
+    <div class="nav-dots-row" id="navDots"><div class="nav-dot cur"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div><div class="nav-dot"></div></div>
+  </div>
+  <button class="btn-nav-big next-btn" id="btnNext" onclick="NAV(1)">Siguiente &#9654;</button>
+</div>
+<script>
+var SCORM=(function(){
+  var a=null,ok=false;
+  function find(w){var t=0;try{while(!w.API_1484_11&&w.parent&&w.parent!==w&&t<10){w=w.parent;t++;}}catch(e){}return w.API_1484_11||null;}
+  (function(){try{a=find(window);if(!a&&window.opener)a=find(window.opener);if(a){var r=a.Initialize('');ok=(r==='true'||r===true);}}catch(e){}})();
+  function sv(k,v){try{if(a&&ok)a.SetValue(k,v);}catch(e){}}
+  function done(p){
+    try{sv('cmi.score.raw',p);sv('cmi.score.min',0);sv('cmi.score.max',100);sv('cmi.score.scaled',(p/100).toFixed(4));sv('cmi.completion_status','completed');sv('cmi.success_status',p>=75?'passed':'failed');sv('cmi.session_time','PT7M0S');if(a&&ok){a.Commit('');a.Terminate('');}}catch(e){}
+    var b=document.getElementById('resultBanner');
+    if(b){b.style.cssText='display:block;border-radius:12px;padding:22px;margin:14px 0;text-align:center;font-size:14px;line-height:1.9;background:'+(p>=75?'linear-gradient(135deg,#F0FDF4,#DCFCE7)':'linear-gradient(135deg,#FFF5F5,#FEE2E2)')+';color:'+(p>=75?'#14532D':'#7F1D1D')+';border:2px solid '+(p>=75?'#86EFAC':'#FCA5A5');
+    b.innerHTML='<div style="font-size:38px;margin-bottom:8px">'+(p>=75?'🎉':'⚠️')+'</div><strong style="font-size:18px">'+(p>=75?'¡Aprobado! '+p+'%':'No aprobado — '+p+'%')+'</strong><br><span style="font-size:13px">'+(p>=75?'Módulo completado correctamente. ¡Continúa con el siguiente día!':'Umbral mínimo 75%. Revisa el contenido y vuelve a intentarlo.')+'</span>';}
+  }
+  return{set:sv,get:function(){return'';},commit:function(){},finish:function(){},setComplete:done,initialized:ok};
+})();
+
+var CUR=0,TOTAL_SC=0;
+function NAV(d){
+  var n=CUR+d;if(n<0||n>=TOTAL_SC)return;
+  var prev=document.getElementById('sc'+CUR);if(prev)prev.classList.remove('active');
+  CUR=n;if(typeof state!=='undefined')state.cur=CUR;
+  var next=document.getElementById('sc'+CUR);if(next)next.classList.add('active');
+  UPD();
+  if(CUR===TOTAL_SC-2&&typeof state!=='undefined'&&!state.qInitDone){state.qInitDone=true;if(typeof showQuestion==='function')showQuestion();}
+  if(CUR===TOTAL_SC-1&&typeof showResults==='function')showResults();
+  window.scrollTo(0,0);
+}
+function goScene(d){NAV(d);}
+function UPD(){
+  document.getElementById('navCnt').textContent=(CUR+1)+' / '+TOTAL_SC;
+  document.getElementById('btnPrev').disabled=(CUR===0);
+  document.getElementById('btnNext').disabled=(CUR===TOTAL_SC-1);
+  var pb=document.getElementById('progressBar');if(pb)pb.style.width=(TOTAL_SC>1?Math.round(CUR/(TOTAL_SC-1)*100):0)+'%';
+  var sl=document.getElementById('sceneLabel');if(sl)sl.textContent='Módulo '+(CUR+1)+' de '+TOTAL_SC;
+  var bl=document.getElementById('bloomLabel');if(bl&&typeof BLOOM!=='undefined')bl.textContent='Bloom: '+(BLOOM[CUR]||'');
+  var sd=document.getElementById('scoreDisplay');if(sd&&typeof state!=='undefined')sd.textContent='Puntuación: '+Math.round(state.quizScore/4*100)+'%';
+  document.querySelectorAll('#navDots .nav-dot').forEach(function(d,i){d.className='nav-dot'+(i<CUR?' done':i===CUR?' cur':'');});
+}
+function buildDots(){}
+function updateDots(){UPD();}
+function updateUI(){UPD();}
+document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowDown')NAV(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')NAV(-1);});
+var _tx=0;document.addEventListener('touchstart',function(e){_tx=e.touches[0].clientX;},{passive:true});
+document.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-_tx;if(Math.abs(dx)>40){if(dx<0)NAV(1);else NAV(-1);}},{passive:true});
+
+var state={cur:0,total:9,quizScore:0,quizCurrent:0,quizAnswered:false,qInitDone:false,decisions:{1:null,2:null,3:null}};
+
+var BLOOM=["Evaluar", "Evaluar", "Evaluar", "Evaluar", "Evaluar", "Evaluar", "Evaluar", "Evaluar", "Evaluar"];
+var CARDS=[{"name": "Repaso: tipos de llamada", "icon": "📞", "color": "blue", "desc": "Básica (consulta, estado), Intermedia (reclamo, NC, plazo), Avanzada (ED, PMGD, falla masiva). Cada nivel tiene su protocolo. ED siempre es prioridad máxima — escalar a Operaciones + Jefatura en simultáneo e inmediato."}, {"name": "Repaso: herramientas clave", "icon": "💻", "color": "teal", "desc": "C4C: tickets y observaciones. Genesys: estados de disponibilidad. ES32: estado del suministro y aviso GGCC. FPL9: historial de facturación. Centrality: tickets técnicos de campo. Cada herramienta tiene su propósito específico — no son intercambiables."}, {"name": "Repaso: facturación y NC", "icon": "🧾", "color": "purp", "desc": "NC neta = (cobrado neto − correcto neto). NC total = NC neta × 1,19. Verificar en FPL9 antes de emitir. Límites: $50k (ejecutivo), $200k (supervisor), $1M (jefatura). No comprometer compensaciones sin autorización del nivel correspondiente."}, {"name": "Repaso: Netbilling", "icon": "☀️", "color": "amber", "desc": "Prosumidor = produce y consume. Crédito = kWh inyectados × precio valorización (menor que precio consumo — por diseño). Excedentes aparecen en la SIGUIENTE boleta. Verificar medidor bidireccional en ES32. PMGD: escalar siempre a Técnica + Jefatura."}, {"name": "Repaso: Ley Karin y medidores", "icon": "⚖️", "color": "red", "desc": "Ley Karin: protege de acoso laboral y sexual. Protocolo ante cliente abusivo: advertir → finalizar si continúa → registrar en C4C → reportar a jefatura. Medidores: mono/bi/trifásico/bidireccional. MI-03: lectura anómala → suspender cobro → relectura."}, {"name": "Sistema de mentoría post-inducción", "icon": "🎓", "color": "green", "desc": "Las primeras 8 semanas en cargo: tutor asignado, LMS semanal de 15 min, rol play semanal, estado 'ayuda a compañero' en Genesys. Criterios de graduación: 3 turnos autónomos consecutivos + Nivel 3 en LMS + 2 escalamientos correctos verificados por el tutor."}];
+var DEC={1:{correct:'A',A:{ok:true,msg:"Correcto. Una ED siempre interrumpe cualquier otra gestión en curso — el riesgo vital es la prioridad máxima. La secuencia es: ED primero → registrar → comunicar al cliente qué está pasando → retomar el caso de la boleta. Nunca al revés."},B:{ok:false,msg:"La consulta de la boleta no es urgente. Una persona en riesgo vital SÍ es urgente. Terminar la consulta antes de activar el protocolo ED puede costar una vida — es la prioridad más alta del cargo."},C:{ok:false,msg:"El protocolo ED del contact center eléctrico existe precisamente para estos casos. El ejecutivo/a activa el escalamiento interno para restablecer el suministro — eso es independiente de la emergencia médica que el cliente puede también gestionar."}},2:{correct:'B',A:{ok:false,msg:"Prometer que \'mañana tiene los créditos de excedentes\' es incorrecto. Los excedentes del período actual aparecen en la SIGUIENTE boleta — es el proceso normal de Netbilling, no un atraso. Prometer algo que no se puede cumplir genera otro reclamo."},B:{ok:true,msg:"Correcto. Secuenciar: NC primero (error confirmado, dentro del límite, proceder), luego explicar los excedentes (el medidor está activo, los créditos aparecen en la SIGUIENTE boleta — no hay error). El cliente tiene 2 situaciones: una real (precio incorrecto) y una expectativa incorrecta (excedentes inmediatos). Resolver ambas con claridad."},C:{ok:false,msg:"El ejecutivo/a gestiona todos los asuntos del cliente en la misma llamada — no redirecciona para múltiples llamadas. La secuenciación es la habilidad clave, no la derivación."}},3:{correct:'C',A:{ok:false,msg:"La Ley Karin permite finalizar la llamada DESPUÉS de advertir al cliente — no automáticamente en el primer insulto. La advertencia previa es parte del protocolo y le da al cliente la oportunidad de corregir su conducta. Además, el cliente PMGD tiene un problema real y urgente que debe gestionarse."},B:{ok:false,msg:"Tener razón en el reclamo no le da derecho al cliente a insultar al ejecutivo/a. La Ley Karin protege la dignidad del trabajador/a independientemente de si el reclamo del cliente es válido o no."},C:{ok:true,msg:"Correcto. Secuencia perfecta: (1) validar la molestia del cliente (es legítima — 28 horas sin suministro es inaceptable), (2) advertir sobre los insultos según protocolo Ley Karin, (3) gestionar el caso PMGD urgente con el protocolo correcto, (4) documentar el incumplimiento de plazo para el proceso de compensación. Todo en paralelo."}},};
+var QUIZ=[{"q": "Una llamada comienza como consulta de facturación y el cliente menciona que tiene un familiar con bomba de insulina sin suministro. ¿Qué haces?", "opts": ["Terminar de revisar la facturación primero y luego atender lo del familiar", "Pausar la consulta de facturación inmediatamente y activar el protocolo ED — escalar a Operaciones + Jefatura en simultáneo", "Pedirle que llame al 131 (emergencias médicas)", "Registrar ambas situaciones y procesar en orden de llegada"], "ans": 1, "exp": "La ED interrumpe cualquier otra gestión en curso, siempre. El riesgo vital es la prioridad máxima del cargo. Secuencia: ED primero → registrar → comunicar al cliente → retomar la facturación después de resolver la urgencia."}, {"q": "Un prosumidor Netbilling llama porque 'no ve los créditos de sus excedentes de este mes en su boleta actual'. ¿Qué le explicas?", "opts": ["Que hay un error técnico y que lo van a revisar", "Que los excedentes del período actual aparecen en la SIGUIENTE boleta — es el proceso normal de Netbilling, no un error", "Que los créditos se procesan manualmente y pueden tardar 2 meses", "Que debe verificar en el portal de autogestión y no por teléfono"], "ans": 1, "exp": "Los excedentes del período actual se reflejan en la SIGUIENTE boleta — es el ciclo normal de Netbilling, no un atraso ni un error. Esta es la consulta más frecuente de prosumidores nuevos. Explicarlo con claridad evita un reclamo innecesario."}, {"q": "Un cliente con código PMGD lleva 28 horas sin suministro (plazo vencido) e insulta al ejecutivo/a. ¿Cuál es la acción correcta?", "opts": ["Colgar inmediatamente porque los insultos están protegidos por Ley Karin", "Aguantar los insultos porque el reclamo del cliente es válido", "Advertir al cliente que finalizará la llamada si continúan los insultos, gestionar el caso PMGD con protocolo urgente y documentar el incumplimiento de plazo para compensación", "Solo transferir a jefatura sin decir nada"], "ans": 2, "exp": "Tres cosas en paralelo: (1) advertencia Ley Karin ('si los insultos continúan terminaré la llamada'), (2) gestionar el caso PMGD urgente (escalar Técnica + Jefatura), (3) documentar el incumplimiento de plazo para el proceso de compensación. Tener razón en el reclamo no da derecho a insultar, pero el problema real sí debe gestionarse con urgencia."}, {"q": "¿Cuál es el criterio correcto para crear un ticket Dummy en Centrality?", "opts": ["Cuando el cliente no tiene número de RUT disponible", "Cuando la dirección del suministro NO existe en la base de datos de calles del sistema", "Cuando el problema ocurre cerca de la medianoche", "Cuando el monto involucrado supera los $200.000"], "ans": 1, "exp": "El criterio es único: Dummy solo cuando la dirección NO existe en el sistema. Si la dirección existe → asociar al servicio. No hay otros criterios válidos. Crear Dummy cuando la dirección existe es un error de proceso que puede llevar a la brigada al lugar equivocado."}];
+var SYNTH=["ED: prioridad máxima siempre — interrumpe cualquier gestión en curso. Escalar Operaciones + Jefatura simultáneo.", "Herramientas: ES32 (estado suministro), FPL9 (facturación), C4C (tickets y obs.), Centrality (campo), Genesys (disponibilidad).", "NC: verificar FPL9 → calcular neto × 1,19 → verificar límite de autorización → emitir o escalar.", "Netbilling: excedentes en SIGUIENTE boleta. Precio valorización < precio consumo — por diseño.", "Ley Karin: advertir → finalizar si continúa → registrar C4C → reportar jefatura. El registro es obligatorio."];
+var ERRORS=["Terminar la consulta en curso antes de activar el protocolo ED — el riesgo vital es siempre primero.", "Prometer a un prosumidor que los excedentes aparecerán inmediatamente en la boleta actual.", "Crear ticket Dummy cuando la dirección existe en el sistema.", "Continuar aguantando insultos sistemáticos sin advertir al cliente y registrar el incidente.", "Comprometer compensaciones directamente sin autorización del nivel correspondiente."];
+
+function buildCards(){{
+  var g=document.getElementById('cardGrid');if(!g)return;
+  CARDS.forEach(function(c){{
+    var d=document.createElement('div');d.className='rev-card '+c.color;
+    d.innerHTML='<h4><span class="card-icon">'+c.icon+'</span>'+c.name+'</h4><div class="rev-desc">'+c.desc+'</div><span class="rev-hint">👆 Toca para explorar</span>';
+    d.onclick=function(){{
+      if(this.classList.contains('revealed'))return;
+      this.classList.add('revealed');this.querySelector('.rev-hint').textContent='✓ Explorado';
+      state.cardRevealed=(state.cardRevealed||0)+1;
+      var cnt=document.getElementById('cardCnt');
+      if(cnt)cnt.textContent=state.cardRevealed+' de '+CARDS.length+' conceptos explorados';
+    }};
+    g.appendChild(d);
+  }});
+}}
+function buildSynth(){{
+  var b=document.getElementById('synthBody');if(!b)return;
+  b.innerHTML=SYNTH.map(function(s){{return '<div class="synth-item"><span class="si-icon">✓</span><p>'+s+'</p></div>';}}).join('');
+}}
+function buildErrors(){{
+  var b=document.getElementById('errorBody');if(!b)return;
+  b.innerHTML=ERRORS.map(function(e){{return '<div class="error-item"><span class="ei-icon">✗</span><p>'+e+'</p></div>';}}).join('');
+}}
+function decidir(n,opt){{
+  if(state.decisions[n])return;state.decisions[n]=opt;
+  var dec=DEC[n];var btns=document.querySelectorAll('#d'+n+' .opt');var letters=['A','B','C'];
+  btns.forEach(function(b,i){{if(letters[i]===dec.correct)b.classList.add('correct');else if(letters[i]===opt&&opt!==dec.correct)b.classList.add('wrong');else b.classList.add('disabled');}});
+  var res=dec[opt];var fb=document.getElementById('fb'+n);
+  fb.className='feedback show '+(res.ok?'ok':'ko');
+  fb.innerHTML=(res.ok?'<strong>✓ Correcto</strong> — ':'<strong>✗ Incorrecto</strong> — ')+res.msg;
+}}
+function showQuestion(){{
+  var q=QUIZ[state.quizCurrent];
+  document.getElementById('qCounter').textContent='Pregunta '+(state.quizCurrent+1)+' de '+QUIZ.length;
+  document.getElementById('qFb').className='feedback';document.getElementById('qNext').style.display='none';state.quizAnswered=false;
+  document.getElementById('qText').innerHTML='<p style="font-size:13.5px;line-height:1.7;margin-bottom:14px;font-weight:600;color:#1E293B">'+q.q+'</p>';
+  var opts=document.getElementById('qOpts');opts.innerHTML='';
+  q.opts.forEach(function(o,i){{var b=document.createElement('button');b.className='opt';b.innerHTML=o;b.onclick=(function(idx){{return function(){{answerQ(idx);}};}})(i);opts.appendChild(b);}});
+}}
+function answerQ(idx){{
+  if(state.quizAnswered)return;state.quizAnswered=true;
+  var q=QUIZ[state.quizCurrent];
+  document.querySelectorAll('#qOpts .opt').forEach(function(b,i){{if(i===q.ans)b.classList.add('correct');else if(i===idx&&idx!==q.ans)b.classList.add('wrong');else b.classList.add('disabled');}});
+  var ok=idx===q.ans;if(ok)state.quizScore++;
+  var fb=document.getElementById('qFb');fb.className='feedback show '+(ok?'ok':'ko');
+  fb.innerHTML='<strong>'+(ok?'✓ Correcto':'✗ Incorrecto')+'</strong> — '+q.exp;
+  document.getElementById('qNext').style.display='inline-block';
+  try{{SCORM.set('cmi.interactions.'+state.quizCurrent+'.id','q'+state.quizCurrent);SCORM.set('cmi.interactions.'+state.quizCurrent+'.result',ok?'correct':'wrong');}}catch(e){{}}
+}}
+function nextQ(){{state.quizCurrent++;if(state.quizCurrent<QUIZ.length)showQuestion();else NAV(1);}}
+function showResults(){{
+  var pct=Math.round(state.quizScore/QUIZ.length*100);
+  document.getElementById('resultScore').textContent=state.quizScore+'/'+QUIZ.length;
+  document.getElementById('resultPct').textContent=pct+'% correcto';
+  var sd=document.getElementById('scoreDisplay');if(sd)sd.textContent='Puntuación: '+pct+'%';
+  setTimeout(function(){{document.getElementById('resultBar').style.width=pct+'%';}},300);
+  var badges={{100:'🏆 Dominio total — ¡puntaje perfecto!',75:'👍 Buen desempeño — aprobado',0:'🔁 Bajo el umbral — revisa y reintenta'}};
+  var key=pct===100?100:pct>=75?75:0;
+  document.getElementById('resultBadge').innerHTML=badges[key];
+  if(pct<100&&document.getElementById('reviewBox')){{
+    document.getElementById('reviewBox').innerHTML='<div class="review-box"><div class="review-title">📌 Conceptos para repasar</div><ul class="review-list">'+ERRORS.map(function(e){{return '<li>'+e+'</li>';}}).join('')+'</ul></div>';
+  }}
+  SCORM.setComplete(pct);
+}}
+function restartQuiz(){{
+  state={{cur:0,total:TOTAL_SC,quizScore:0,quizCurrent:0,quizAnswered:false,qInitDone:false,decisions:{{1:null,2:null,3:null}}}};
+  document.querySelectorAll('.scene').forEach(function(s){{s.classList.remove('active');}});
+  document.getElementById('sc0').classList.add('active');CUR=0;
+  document.querySelectorAll('.opt').forEach(function(b){{b.className='opt';}});
+  document.querySelectorAll('.feedback').forEach(function(f){{f.className='feedback';f.innerHTML='';}});
+  document.querySelectorAll('.rev-card').forEach(function(c){{c.classList.remove('revealed');var h=c.querySelector('.rev-hint');if(h)h.textContent='👆 Toca para explorar';}});
+  document.getElementById('reviewBox').innerHTML='';
+  document.getElementById('resultBar').style.width='0%';
+  var sd=document.getElementById('scoreDisplay');if(sd)sd.textContent='Puntuación: 0%';
+  buildCards();buildSynth();buildErrors();UPD();
+}}
+
+document.addEventListener('DOMContentLoaded',function(){
+  TOTAL_SC=9;
+  UPD();
+  if(typeof buildCards==='function')buildCards();
+  if(typeof buildSynth==='function')buildSynth();
+  if(typeof buildErrors==='function')buildErrors();
+  
+  try{SCORM.set('cmi.core.lesson_status','incomplete');}catch(e){}
+});
+</script>
+</body>
+</html>
